@@ -1,0 +1,10 @@
+*** Exception on 20/09/2020 15:50:59***
+'SongLyric' object has no attribute 'anki_deck_path'	***	
+*** Exception on 20/09/2020 15:52:37***
+'SongLyric' object has no attribute 'anki_deck_path'	***	
+*** Exception on 20/09/2020 15:56:03***
+Quitting debugger	***	
+*** Exception on 20/09/2020 16:04:57***
+[Errno 2] No such file or directory: 'song.anki_deck_path'	***	
+*** Exception on 20/09/2020 16:06:17***
+[Errno 2] No such file or directory: 'song.anki_deck_path'	***	
