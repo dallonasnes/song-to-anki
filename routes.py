@@ -66,7 +66,7 @@ def log_exception(exc):
     exc = str(exc)
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-    metadata_line = "*** Exception on " + dt_string + "***\n"
+    metadata_line = "*** Exception on " + dt_string + " \t***\n"
     end_line = "\t***\t\n"
     with (open("logs.txt", "a+")) as file:
         file.write(metadata_line)

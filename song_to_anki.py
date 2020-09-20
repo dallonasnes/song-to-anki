@@ -63,6 +63,7 @@ def _wr_apkg(notes, deckname):
         deck.add_note(note)
     fout_anki = '{NAME}.apkg'.format(NAME=deckname)
     print("TODO: How can I return as binary instead of writing it then having to delete it")
+    #import pdb; pdb.set_trace()
     Package(deck).write_to_file(fout_anki)
     print('  {N} Notes WROTE: {APKG}'.format(N=len(notes), APKG=fout_anki))
     return fout_anki
@@ -140,9 +141,6 @@ class SongLyric():
         path = self.anki_deck_path
         with open(path, "rb") as bites:
             self.anki_deck = io.BytesIO(bites.read())
-        #with io.open(path, "rb") as f:
-        #    content = f.read()
-        #self.anki_deck = content
 
     def visualize(self):
         #render HTML and JS such that words are highlighted as they are said in song
