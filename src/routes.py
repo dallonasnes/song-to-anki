@@ -1,8 +1,6 @@
-import json
-import io
-from flask import jsonify, request, send_from_directory
 from datetime import datetime
-from song_to_anki import SongLyric, Method
+from flask import jsonify, request, send_from_directory
+from .song_to_anki import SongLyric, Method
 
 def configure_routes(app):
     #####################################
@@ -12,10 +10,10 @@ def configure_routes(app):
     def handle_text():
         try:
             url = request.args.get('targetUrl')
-            songName = request.args.get('songName')
+            song_name = request.args.get('songName')
             language = request.args.get('language')
 
-            song = SongLyric(url, songName, language, Method.WORD_FREQ)
+            song = SongLyric(url, song_name, language, Method.WORD_FREQ)
             try:
                 song.parse_text()
                 song.build_mapping()

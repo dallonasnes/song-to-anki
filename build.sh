@@ -1,0 +1,1 @@
+docker build --rm -f "Dockerfile" -t song_to_anki .

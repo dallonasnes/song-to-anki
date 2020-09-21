@@ -3,7 +3,7 @@ import json
 import requests
 import shutil
 
-from routes import configure_routes
+from .routes import configure_routes
 
 def test_endpoint():
     app = Flask(__name__)

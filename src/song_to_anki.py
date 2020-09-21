@@ -11,6 +11,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
+from pyvirtualdisplay import Display
+
 from genanki import Model
 from genanki import Note
 from genanki import Deck
@@ -67,7 +69,7 @@ def _build_deck(notes, deckname):
 def _wr_apkg(deck, deckname):
     """Writes deck to Anki apkg file
         @params: anki deck object, deckname
-        @returns path to output deck
+        @returns path to output dec
     """
     fout = 'decks/{NAME}.apkg'.format(NAME=deckname)
     pkg = Package(deck)
@@ -108,8 +110,21 @@ class SongLyric():
             self.words_seen_in_this_deck = set()
             self.my_vocabulary: Set[str] = _get_my_vocab_for_lang(self.vocab_filename)
 
+        #chromedriver setup
+        self.display = Display(visible=0, size=(800, 600))
+        self.display.start()
+
         options = Options()
-        options.headless = True
+        #options.headless = True
+        options.add_argument('--disable-extensions')
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--no-sandbox')
+        options.add_experimental_option('prefs', {
+        'download.default_directory': os.getcwd(),
+        'download.prompt_for_download': False,
+        })
+
         self.driver = webdriver.Chrome(options=options)
         self.wait = WebDriverWait(self.driver, 5)
 
@@ -243,6 +258,7 @@ class SongLyric():
     
     def finish(self, cleanup=False):
         self.driver.quit()
+        self.display.stop()
         
         #overwrite my vocabulary text file with the udpated one
         if self.method != Method.NAIVE and not cleanup:
@@ -301,20 +317,7 @@ if __name__ == "__main__":
             song.parse_text()
             song.build_mapping()
             song.build_anki_deck()
-        finally:
-            song.finish()
-    elif len(args) == 1:
-        #BASIC TEST MODE
-        url = "https://lyricstranslate.com/en/sac-%C3%A0-dos-backpack.html"
-        song_name = "sac a dos - bigflo&oli"
-        lang = "french"
-        song = SongLyric(url, song_name, lang, Method.WORD_FREQ)
-        try:
-            song.parse_text()
-            song.build_mapping()
-            #song.align_text_with_audio()
-            song.build_anki_deck()
-            #song.visualize()
+            song.write_anki_deck_to_file()
         finally:
             song.finish()
     else:
