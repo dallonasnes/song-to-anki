@@ -14,8 +14,8 @@ if __name__ == "__main__":
 
 #TODO:
 """
-1) HANDLE MULTIPLE VERSIONS in app
-2) support any language + tests
+1) determine original language and song from URL
+2) generic tests for any language
 3) use logging module
 4) cleanup/productionize/minimize imports + dependencies + pip installs
 5) ci/git workflows

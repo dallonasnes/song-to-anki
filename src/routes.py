@@ -10,11 +10,9 @@ def configure_routes(app):
     def handle_text():
         try:
             url = request.args.get('targetUrl')
-            song_name = request.args.get('songName')
-            language = request.args.get('language')
-
-            song = SongLyric(url, song_name, language, Method.WORD_FREQ, api=True)
+            song = SongLyric(url, Method.WORD_FREQ, api=True)
             try:
+                song.populate_metadata()
                 song.parse_text()
                 song.build_mapping()
                 song.build_anki_deck()

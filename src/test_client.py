@@ -9,7 +9,7 @@ def test_endpoint_basic():
     app = Flask(__name__)
     configure_routes(app)
     client = app.test_client()
-    url = '/ankify-lyrics?songName=dommage&language=french&targetUrl=https://lyricstranslate.com/en/dommage-too-bad.html'
+    url = '/ankify-lyrics?targetUrl=https://lyricstranslate.com/en/dommage-too-bad.html'
 
     response = client.get(url)
     assert response.status_code == 200
@@ -19,8 +19,12 @@ def test_endpoint_song_has_versions():
     app = Flask(__name__)
     configure_routes(app)
     client = app.test_client()
-    url = '/ankify-lyrics?songName=comme_dhab&language=french&targetUrl=https://lyricstranslate.com/en/comme-dhab-usual.html'
+    url = '/ankify-lyrics?targetUrl=https://lyricstranslate.com/en/comme-dhab-usual.html'
 
     response = client.get(url)
     assert response.status_code == 200
     assert len(response.get_data()) > 0
+
+def stress_test_short():
+    """Tests the first 10 'New translations' on lyricstranslate.com"""
+    pass

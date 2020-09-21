@@ -26,6 +26,8 @@ from typing import Set, List
 from enum import Enum
 
 from wordfreq import zipf_frequency
+import langcodes
+from bs4 import BeautifulSoup
 
 # ANKI card and deck preferences setup pasted from:
 # https://github.com/kerrickstaley/genanki/blob/master/tests/test_cloze.py
@@ -54,7 +56,7 @@ MY_CLOZE_MODEL = Model(
   templates=[{
     'name': 'My Cloze Card',
     'qfmt': '{{cloze:Text}}',
-    'afmt': '{{cloze:Text}}<br>{{Extra}}',
+    'afmt': '{{cloze:Text}}<br><br>{{Extra}}',
   },],
   css=CSS,
   model_type=Model.CLOZE)
@@ -95,25 +97,16 @@ def _line_filter(line):
 
 class SongLyric():
 
-    def __init__(self, url, song_name, lang, method=Method.NAIVE, api=False):
+    def __init__(self, url, method=Method.NAIVE, api=False):
         self.url = url
-        self.song_name = song_name
-        self.lang = lang.lower()
-        self.vocab_filename = "vocabs/" + self.lang + uuid.uuid4().hex + "vocab.txt"
-        self.lang_code = self._get_lang_code()
         self.method = method
+        self.api = api
         self.anki_deck_path = None
         self.display = None
-
-        if self.method == Method.NLP:
-            import spacy
-            #only need these things if not using naive method of creating cloze deletion cards
-            self.nlp = _try_get_nlp_for_lang(lang)
-            self.stop_words = _get_stop_words_for_lang(lang)
-        
-        if self.method != Method.NAIVE:
-            self.words_seen_in_this_deck = set()
-            self.my_vocabulary: Set[str] = _get_my_vocab_for_lang(self.vocab_filename)
+        self.vocab_filename = None
+        self.song_name = None
+        self.lang = None
+        self.lang_code = None
 
         #chromedriver setup
         options = Options()
@@ -135,13 +128,31 @@ class SongLyric():
         self.driver = webdriver.Chrome(options=options)
         self.wait = WebDriverWait(self.driver, 5)
 
-    def _get_lang_code(self):
-        if self.lang == "french":
-            return "fr"
-        else:
-            raise NotImplementedError("Lang code not yet implemented for language: " + str(self.lang))
+    def populate_metadata(self):
+        self.driver.get(self.url)
+        sleep(1)
+        song_name = self.driver.find_element_by_class_name("song-node-info-album").find_element_by_tag_name("a").text
+        lang = self.driver.find_element_by_class_name("song-langs-preview-visible").text.lower()
 
-    def get_lyrics_from_page(self):
+        self.song_name = song_name
+        self.lang = lang.lower().strip()
+        self.vocab_filename = "vocabs/" + self.lang + uuid.uuid4().hex + "vocab.txt"
+        self.lang_code = self._get_lang_code()
+
+        if self.method == Method.NLP:
+            import spacy
+            #only need these things if not using naive method of creating cloze deletion cards
+            self.nlp = _try_get_nlp_for_lang(self.lang)
+            self.stop_words = _get_stop_words_for_lang(self.lang)
+        
+        if self.method != Method.NAIVE:
+            self.words_seen_in_this_deck = set()
+            self.my_vocabulary: Set[str] = _get_my_vocab_for_lang(self.vocab_filename)
+
+    def _get_lang_code(self):
+        return langcodes.find(self.lang).language
+
+    def _get_lyrics_from_page(self):
         #wait for load
         sleep(1)
         self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="lyrics-preview"]/p/a')))
@@ -157,9 +168,7 @@ class SongLyric():
         self.song_lyrics = list(filter(_line_filter, lyrics[1].text.split('\n')))
 
     def parse_text(self):
-        self.driver.get(self.url)
-
-        self.get_lyrics_from_page()
+        self._get_lyrics_from_page()
 
         if len(self.song_lyrics) != len(self.translation_lyrics):
             #check for different versions and try all versions until one works
@@ -168,7 +177,7 @@ class SongLyric():
                 #click to get that version
                 version.click()
                 #retry get lyrics from page
-                self.get_lyrics_from_page()
+                self._get_lyrics_from_page()
 
                 if len(self.song_lyrics) == len(self.translation_lyrics):
                     break
@@ -312,7 +321,7 @@ def _get_my_vocab_for_lang(filename):
 def _overwrite_vocab_file(filename, words_seen: Set, songname: str):
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-    metadata_line = "*** new vocabulary from song " + songname + " written on " + dt_string + "***\n"
+    metadata_line = "*** new vocabulary from song " + songname + " written on " + dt_string + " ***\n"
     with (open(filename, "a+")) as file:
         file.write(metadata_line)
         [file.write(line + '\n') for line in list(words_seen)]
@@ -329,12 +338,11 @@ def _get_stop_words_for_lang(lang):
 
 if __name__ == "__main__":
     args = sys.argv
-    if len(args) == 4:
+    if len(args) == 2:
         url = args[1]
-        song_name = args[2]
-        lang = args[3]
-        song = SongLyric(url, song_name, lang, Method.WORD_FREQ)
+        song = SongLyric(url, Method.WORD_FREQ)
         try:
+            song.populate_metadata()
             song.parse_text()
             song.build_mapping()
             song.build_anki_deck()
@@ -342,4 +350,4 @@ if __name__ == "__main__":
         finally:
             song.finish()
     else:
-        print("Usage: LyricsTranslate_url{1} song_name{2} language{3}")
+        print("Usage: LyricsTranslate_url{1}")
