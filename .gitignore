@@ -1,2 +1,4 @@
 *.apkg
 __pycache__
+decks/
+vocabs/

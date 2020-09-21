@@ -1,6 +1,6 @@
 import json
 import io
-from flask import jsonify, request, send_file
+from flask import jsonify, request, send_from_directory
 from datetime import datetime
 from song_to_anki import SongLyric, Method
 
@@ -20,28 +20,16 @@ def configure_routes(app):
                 song.parse_text()
                 song.build_mapping()
                 song.build_anki_deck()
+                song.write_anki_deck_to_file()
                 song.get_anki_deck_as_binary()
-                song.finish(cleanup=True)
 
             except Exception as exc:
                 song.finish(cleanup=True)
                 raise exc
             
-            #to use this also need to uncomment song.get_anki_deck_as_binary() and set cleanup to True
-            #return song.anki_deck, 200#json_success({"deck": json.dumps(song.anki_deck)})
-
-            #using return method from https://gist.github.com/Miserlou/fcf0e9410364d98a853cb7ff42efd35a
-            return send_file(
-                    song.anki_deck,
-                    attachment_filename=song.anki_deck_path,
-                    as_attachment=True
-                ), 200
-            ##with open("song.anki_deck_path", "rb") as bites:
-            #    return send_file(
-            #        io.BytesIO(bites.read()),
-            #        attachment_filename=song.anki_deck_path,
-            #        as_attachment=True
-            #    ), 200
+            response = send_from_directory(directory='.', filename=song.anki_deck_path)
+            song.finish(cleanup=True)
+            return response
 
         except Exception as ex:
             log_exception(ex)

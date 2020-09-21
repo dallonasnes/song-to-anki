@@ -13,4 +13,4 @@ def test_endpoint():
 
     response = client.get(url)
     assert response.status_code == 200
-    #import pdb; pdb.set_trace()
+    assert len(response.get_data()) > 0

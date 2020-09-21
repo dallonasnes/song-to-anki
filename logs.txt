@@ -8,3 +8,23 @@ Quitting debugger	***
 [Errno 2] No such file or directory: 'song.anki_deck_path'	***	
 *** Exception on 20/09/2020 16:06:17***
 [Errno 2] No such file or directory: 'song.anki_deck_path'	***	
+*** Exception on 21/09/2020 07:43:23 	***
+'SongLyric' object has no attribute 'anki_deck_path'	***	
+*** Exception on 21/09/2020 07:43:38 	***
+'SongLyric' object has no attribute 'anki_deck_path'	***	
+*** Exception on 21/09/2020 07:45:57 	***
+Quitting debugger	***	
+*** Exception on 21/09/2020 07:46:15 	***
+'SongLyric' object has no attribute 'anki_deck_path'	***	
+*** Exception on 21/09/2020 07:47:10 	***
+'SongLyric' object has no attribute 'anki_deck_path'	***	
+*** Exception on 21/09/2020 07:48:59 	***
+Quitting debugger	***	
+*** Exception on 21/09/2020 07:50:56 	***
+Object of type Deck is not JSON serializable	***	
+*** Exception on 21/09/2020 07:52:46 	***
+Quitting debugger	***	
+*** Exception on 21/09/2020 08:26:20 	***
+404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.	***	
+*** Exception on 21/09/2020 08:28:12 	***
+Quitting debugger	***	

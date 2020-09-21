@@ -3,6 +3,7 @@ import os
 import io
 import requests
 import uuid
+from zipfile import ZipFile
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -56,17 +57,28 @@ MY_CLOZE_MODEL = Model(
   css=CSS,
   model_type=Model.CLOZE)
 
-def _wr_apkg(notes, deckname):
-    """Write cloze cards to an Anki apkg file"""
+def _build_deck(notes, deckname):
+    """Builds anki deck out of notes. Returns anki deck object"""
     deck = Deck(deck_id=23, name=deckname)
     for note in notes:
         deck.add_note(note)
-    fout_anki = '{NAME}.apkg'.format(NAME=deckname)
-    print("TODO: How can I return as binary instead of writing it then having to delete it")
-    #import pdb; pdb.set_trace()
-    Package(deck).write_to_file(fout_anki)
-    print('  {N} Notes WROTE: {APKG}'.format(N=len(notes), APKG=fout_anki))
-    return fout_anki
+    return deck
+
+def _wr_apkg(deck, deckname):
+    """Writes deck to Anki apkg file
+        @params: anki deck object, deckname
+        @returns path to output deck
+    """
+    fout = 'decks/{NAME}.apkg'.format(NAME=deckname)
+    pkg = Package(deck)
+    pkg.write_to_file(fout)
+    print('  {N} Notes WROTE: {APKG}'.format(N=len(deck.notes), APKG=fout))
+    return fout
+
+def _zip_apkg(deck_path):
+    fout_zip = deck_path + '.zip'
+    ZipFile(fout_zip, mode='w').write(deck_path)
+    return fout_zip
 
 class Method(Enum):
     NAIVE = 0
@@ -81,9 +93,10 @@ class SongLyric():
         self.url = url
         self.song_name = song_name
         self.lang = lang.lower()
-        self.vocab_filename = self.lang + uuid.uuid4().hex + "vocab.txt"
+        self.vocab_filename = "vocabs/" + self.lang + uuid.uuid4().hex + "vocab.txt"
         self.lang_code = self._get_lang_code()
         self.method = method
+        self.anki_deck_path = None
 
         if self.method == Method.NLP:
             import spacy
@@ -156,7 +169,10 @@ class SongLyric():
             my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
             self.notes.append(my_cloze_note)
 
-        self.anki_deck_path = _wr_apkg(self.notes, self.song_name)
+        self.anki_deck = _build_deck(self.notes, self.song_name)
+        
+    def write_anki_deck_to_file(self):
+        self.anki_deck_path = _wr_apkg(self.anki_deck, self.song_name)
     
     def build_cloze_deletion_sentence(self, lyric, translation):
         #cleanse of stop words and cloze words/phrases that aren't in my vocabulary (database? restAPI?)
@@ -234,8 +250,8 @@ class SongLyric():
         
         if cleanup:
             try:
-                os.remove(self.vocab_filename)
-                os.remove(self.anki_deck_path)
+                if self.vocab_filename: os.remove(self.vocab_filename)
+                if self.anki_deck_path: os.remove(self.anki_deck_path)
             except OSError:
                 pass
 

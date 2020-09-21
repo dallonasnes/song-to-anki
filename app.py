@@ -15,6 +15,8 @@ if __name__ == "__main__":
 #TODO:
 """
 1) make python test client for rest api
-2) deploy basic rest api to python anywhere
+2) deploy basic rest api to python anywhere -- NEEDS TO RUN SELENIUM, NEEDS A VM
+    a) use Docker container 
+
 3) try to hit it from browser
 """
