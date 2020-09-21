@@ -88,10 +88,11 @@ class Method(Enum):
     WORD_FREQ = 2
 
 CLOZE_LIMIT = 2
+MAX_RETRIES = 5
 
 class SongLyric():
 
-    def __init__(self, url, song_name, lang, method=Method.NAIVE):
+    def __init__(self, url, song_name, lang, method=Method.NAIVE, api=False):
         self.url = url
         self.song_name = song_name
         self.lang = lang.lower()
@@ -99,6 +100,7 @@ class SongLyric():
         self.lang_code = self._get_lang_code()
         self.method = method
         self.anki_deck_path = None
+        self.display = None
 
         if self.method == Method.NLP:
             import spacy
@@ -111,19 +113,21 @@ class SongLyric():
             self.my_vocabulary: Set[str] = _get_my_vocab_for_lang(self.vocab_filename)
 
         #chromedriver setup
-        self.display = Display(visible=0, size=(800, 600))
-        self.display.start()
-
         options = Options()
-        #options.headless = True
-        options.add_argument('--disable-extensions')
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        options.add_argument('--no-sandbox')
-        options.add_experimental_option('prefs', {
-        'download.default_directory': os.getcwd(),
-        'download.prompt_for_download': False,
-        })
+
+        if api:
+            self.display = Display(visible=0, size=(800, 600))
+            self.display.start()
+
+            #options.headless = True
+            options.add_argument('--disable-extensions')
+            options.add_argument('--headless')
+            options.add_argument('--disable-gpu')
+            options.add_argument('--no-sandbox')
+            options.add_experimental_option('prefs', {
+            'download.default_directory': os.getcwd(),
+            'download.prompt_for_download': False,
+            })
 
         self.driver = webdriver.Chrome(options=options)
         self.wait = WebDriverWait(self.driver, 5)
@@ -150,10 +154,35 @@ class SongLyric():
 
         def line_filter(line):
             return len(line.strip()) > 0 and '[' not in line
+
         self.translation_lyrics = list(filter(line_filter, lyrics[0].text.split('\n')))
         self.song_lyrics = list(filter(line_filter, lyrics[1].text.split('\n')))
 
+        if len(self.song_lyrics) != len(self.translation_lyrics):
+            #check for different versions and try all versions until one works
+            other_versions = self.driver.find_element_by_xpath('//*[@id="translittab"]').find_elements_by_tag_name('a')
+            for version in other_versions:
+                #click to get that version
+                version.click()
+                #re-click "show original lyrics"
+                sleep(1)
+                self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="lyrics-preview"]/p/a')))
+                self.driver.find_element_by_xpath('//*[@id="lyrics-preview"]/p/a').click()
+                #is the below line really necessary
+                self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="songtranslation"]/div[2]')))
+                sleep(1)
+                
+                #get "ltf" classes -> there should be 2, one for song lyrics and other for translation lyrics
+                lyrics = self.driver.find_elements_by_class_name("ltf")
+                self.translation_lyrics = list(filter(line_filter, lyrics[0].text.split('\n')))
+                self.song_lyrics = list(filter(line_filter, lyrics[1].text.split('\n')))
+
+                if len(self.song_lyrics) == len(self.translation_lyrics):
+                    break
+        
         assert len(self.song_lyrics) == len(self.translation_lyrics)
+        
+
     
     def build_mapping(self):
         self.mapping = {}
@@ -258,7 +287,7 @@ class SongLyric():
     
     def finish(self, cleanup=False):
         self.driver.quit()
-        self.display.stop()
+        if self.display: self.display.stop()
         
         #overwrite my vocabulary text file with the udpated one
         if self.method != Method.NAIVE and not cleanup:

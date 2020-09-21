@@ -14,8 +14,7 @@ if __name__ == "__main__":
 
 #TODO:
 """
-1) dockerfile
-2) HANDLE MULTIPLE VERSIONS in app
+1) HANDLE MULTIPLE VERSIONS in app
 2) support any language + tests
 3) use logging module
 4) cleanup/productionize/minimize imports + dependencies + pip installs

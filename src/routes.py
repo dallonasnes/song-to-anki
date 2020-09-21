@@ -13,7 +13,7 @@ def configure_routes(app):
             song_name = request.args.get('songName')
             language = request.args.get('language')
 
-            song = SongLyric(url, song_name, language, Method.WORD_FREQ)
+            song = SongLyric(url, song_name, language, Method.WORD_FREQ, api=True)
             try:
                 song.parse_text()
                 song.build_mapping()
