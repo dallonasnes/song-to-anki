@@ -90,6 +90,9 @@ class Method(Enum):
 CLOZE_LIMIT = 2
 MAX_RETRIES = 5
 
+def _line_filter(line):
+    return len(line.strip()) > 0 and '[' not in line
+
 class SongLyric():
 
     def __init__(self, url, song_name, lang, method=Method.NAIVE, api=False):
@@ -138,11 +141,9 @@ class SongLyric():
         else:
             raise NotImplementedError("Lang code not yet implemented for language: " + str(self.lang))
 
-    def parse_text(self):
-        self.driver.get(self.url)
-        sleep(1)
-
+    def get_lyrics_from_page(self):
         #wait for load
+        sleep(1)
         self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="lyrics-preview"]/p/a')))
         self.driver.find_element_by_xpath('//*[@id="lyrics-preview"]/p/a').click()
         #is the below line really necessary
@@ -152,11 +153,13 @@ class SongLyric():
         #get "ltf" classes -> there should be 2, one for song lyrics and other for translation lyrics
         lyrics = self.driver.find_elements_by_class_name("ltf")
 
-        def line_filter(line):
-            return len(line.strip()) > 0 and '[' not in line
+        self.translation_lyrics = list(filter(_line_filter, lyrics[0].text.split('\n')))
+        self.song_lyrics = list(filter(_line_filter, lyrics[1].text.split('\n')))
 
-        self.translation_lyrics = list(filter(line_filter, lyrics[0].text.split('\n')))
-        self.song_lyrics = list(filter(line_filter, lyrics[1].text.split('\n')))
+    def parse_text(self):
+        self.driver.get(self.url)
+
+        self.get_lyrics_from_page()
 
         if len(self.song_lyrics) != len(self.translation_lyrics):
             #check for different versions and try all versions until one works
@@ -164,24 +167,13 @@ class SongLyric():
             for version in other_versions:
                 #click to get that version
                 version.click()
-                #re-click "show original lyrics"
-                sleep(1)
-                self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="lyrics-preview"]/p/a')))
-                self.driver.find_element_by_xpath('//*[@id="lyrics-preview"]/p/a').click()
-                #is the below line really necessary
-                self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="songtranslation"]/div[2]')))
-                sleep(1)
-                
-                #get "ltf" classes -> there should be 2, one for song lyrics and other for translation lyrics
-                lyrics = self.driver.find_elements_by_class_name("ltf")
-                self.translation_lyrics = list(filter(line_filter, lyrics[0].text.split('\n')))
-                self.song_lyrics = list(filter(line_filter, lyrics[1].text.split('\n')))
+                #retry get lyrics from page
+                self.get_lyrics_from_page()
 
                 if len(self.song_lyrics) == len(self.translation_lyrics):
                     break
         
         assert len(self.song_lyrics) == len(self.translation_lyrics)
-        
 
     
     def build_mapping(self):
