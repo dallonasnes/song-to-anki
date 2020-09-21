@@ -34,5 +34,4 @@ RUN pip3 install -r reqs.txt
 
 EXPOSE 8000
 
-#CMD tail -f /dev/null
-#CMD python3 example.py
+CMD ["python3", "app.py"]
