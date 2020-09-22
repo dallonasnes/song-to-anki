@@ -1,6 +1,9 @@
 from datetime import datetime
 from flask import jsonify, request, send_from_directory
+import validators
 from .song_to_anki import SongLyric, Method
+
+LYRICS_TRANSLATE = 'lyricstranslate.com'
 
 def configure_routes(app):
     #####################################
@@ -9,7 +12,14 @@ def configure_routes(app):
     @app.route("/ankify-lyrics", methods=['GET'])
     def handle_text():
         try:
-            url = request.args.get('targetUrl')
+            #get and validate url before continuing
+            url = request.args.get('targetUrl').strip()
+            if not validators.url(url):
+                raise Exception("Invalid url: " + url)
+            
+            if LYRICS_TRANSLATE not in url.lower():
+                raise Exception("url is not for LyricsTranslate.com: " + url)
+
             song = SongLyric(url, Method.WORD_FREQ, api=True)
             try:
                 song.populate_metadata()

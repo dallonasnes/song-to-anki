@@ -9,6 +9,33 @@ from bs4 import BeautifulSoup
 
 from .routes import configure_routes
 
+def test_endpoint_bad_url_localfile():
+    app = Flask(__name__)
+    configure_routes(app)
+    client = app.test_client()
+    url = '/ankify-lyrics?targetUrl=file:///users/file.txt'
+
+    response = client.get(url)
+    assert response.status_code == 400
+
+def test_endpoint_bad_url_localhost():
+    app = Flask(__name__)
+    configure_routes(app)
+    client = app.test_client()
+    url = '/ankify-lyrics?targetUrl=http://localhost:8080'
+
+    response = client.get(url)
+    assert response.status_code == 400
+
+def test_endpoint_valid_url_but_not_lyricstranslate():
+    app = Flask(__name__)
+    configure_routes(app)
+    client = app.test_client()
+    url = '/ankify-lyrics?targetUrl=https://google.com'
+
+    response = client.get(url)
+    assert response.status_code == 400
+
 def test_endpoint_basic():
     app = Flask(__name__)
     configure_routes(app)
@@ -49,3 +76,4 @@ def test_stress_test_short():
         response = client.get(url)
         assert response.status_code == 200
         assert len(response.get_data()) > 0
+    

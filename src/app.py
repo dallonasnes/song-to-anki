@@ -11,11 +11,11 @@ configure_routes(app)
 if __name__ == "__main__":
     app.run(debug=True, port=8000)
 
-#TODO:
 """
+TODO:
 1) setup rest api like this: https://github.com/bellackn/airport_data
-2) ci/git workflows
-3) use logging module
+2) ci/git workflows: https://www.basefactor.com/github-actions-docker
+3) use python's logging module
 4) cleanup/productionize/minimize imports + dependencies + pip installs
 5) make sure not to use names (named entity recog) as cloze cards
 """
