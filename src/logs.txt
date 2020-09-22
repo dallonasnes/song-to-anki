@@ -129,3 +129,9 @@ Invalid url: file:///users/file.txt	***
 url is not for LyricsTranslate.com: http://localhost:8080	***	
 *** Exception on 22/09/2020 13:48:42 	***
 url is not for LyricsTranslate.com: https://google.com	***	
+*** Exception on 22/09/2020 18:27:01 	***
+Invalid url: file:///users/file.txt	***	
+*** Exception on 22/09/2020 18:27:01 	***
+Invalid url: http://localhost:8080	***	
+*** Exception on 22/09/2020 18:27:01 	***
+Invalid url: https://google.com	***	

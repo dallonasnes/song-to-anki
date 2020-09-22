@@ -12,13 +12,10 @@ def configure_routes(app):
     @app.route("/ankify-lyrics", methods=['GET'])
     def handle_text():
         try:
-            #get and validate url before continuing
             url = request.args.get('targetUrl').strip()
-            if not validators.url(url):
+            #get and validate url before continuing
+            if not validators.url(url) or LYRICS_TRANSLATE not in url.lower():
                 raise Exception("Invalid url: " + url)
-            
-            if LYRICS_TRANSLATE not in url.lower():
-                raise Exception("url is not for LyricsTranslate.com: " + url)
 
             song = SongLyric(url, Method.WORD_FREQ, api=True)
             try:
