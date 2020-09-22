@@ -28,3 +28,84 @@ Quitting debugger	***
 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.	***	
 *** Exception on 21/09/2020 08:28:12 	***
 Quitting debugger	***	
+*** Exception on 21/09/2020 23:22:45 	***
+Message: no such element: Unable to locate element: {"method":"css selector","selector":".song-langs-preview-visible"}
+  (Session info: headless chrome=85.0.4183.121)
+	***	
+*** Exception on 21/09/2020 23:23:46 	***
+Message: no such element: Unable to locate element: {"method":"css selector","selector":".song-langs-preview-visible"}
+  (Session info: headless chrome=85.0.4183.121)
+	***	
+*** Exception on 21/09/2020 23:24:50 	***
+Message: no such element: Unable to locate element: {"method":"css selector","selector":".song-langs-preview-visible"}
+  (Session info: headless chrome=85.0.4183.121)
+	***	
+*** Exception on 21/09/2020 23:31:14 	***
+Message: 
+	***	
+*** Exception on 21/09/2020 23:34:42 	***
+Message: 
+	***	
+*** Exception on 21/09/2020 23:44:02 	***
+Quitting debugger	***	
+*** Exception on 21/09/2020 23:52:27 	***
+Quitting debugger	***	
+*** Exception on 21/09/2020 23:53:05 	***
+Quitting debugger	***	
+*** Exception on 21/09/2020 23:54:36 	***
+Message: 
+	***	
+*** Exception on 21/09/2020 23:54:46 	***
+Quitting debugger	***	
+*** Exception on 21/09/2020 23:54:57 	***
+Quitting debugger	***	
+*** Exception on 21/09/2020 23:55:03 	***
+Quitting debugger	***	
+*** Exception on 21/09/2020 23:55:24 	***
+Message: 
+	***	
+*** Exception on 21/09/2020 23:55:36 	***
+Message: 
+	***	
+*** Exception on 21/09/2020 23:55:44 	***
+Message: no such element: Unable to locate element: {"method":"xpath","selector":"//*[@id="translittab"]"}
+  (Session info: headless chrome=85.0.4183.121)
+	***	
+*** Exception on 21/09/2020 23:55:56 	***
+Message: 
+	***	
+*** Exception on 21/09/2020 23:56:33 	***
+Message: 
+	***	
+*** Exception on 21/09/2020 23:56:44 	***
+Message: 
+	***	
+*** Exception on 21/09/2020 23:58:07 	***
+Message: 
+	***	
+*** Exception on 21/09/2020 23:58:19 	***
+Message: 
+	***	
+*** Exception on 21/09/2020 23:58:26 	***
+Message: no such element: Unable to locate element: {"method":"xpath","selector":"//*[@id="translittab"]"}
+  (Session info: headless chrome=85.0.4183.121)
+	***	
+*** Exception on 21/09/2020 23:58:38 	***
+Message: 
+	***	
+*** Exception on 21/09/2020 23:59:14 	***
+Message: 
+	***	
+*** Exception on 21/09/2020 23:59:26 	***
+Message: 
+	***	
+*** Exception on 22/09/2020 00:13:50 	***
+Message: no such element: Unable to locate element: {"method":"xpath","selector":"//*[@id="translittab"]"}
+  (Session info: headless chrome=85.0.4183.121)
+	***	
+*** Exception on 22/09/2020 00:14:40 	***
+Message: no such element: Unable to locate element: {"method":"xpath","selector":"//*[@id="translittab"]"}
+  (Session info: headless chrome=85.0.4183.121)
+	***	
+*** Exception on 22/09/2020 00:56:00 	***
+	***	

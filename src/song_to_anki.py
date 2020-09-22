@@ -130,9 +130,13 @@ class SongLyric():
 
     def populate_metadata(self):
         self.driver.get(self.url)
+        
         sleep(1)
         song_name = self.driver.find_element_by_class_name("song-node-info-album").find_element_by_tag_name("a").text
-        lang = self.driver.find_element_by_class_name("song-langs-preview-visible").text.lower()
+        try:
+            lang = self.driver.find_element_by_class_name("song-langs-preview-visible").text.lower()
+        except:
+            lang = self.driver.find_elements_by_class_name("langsmall-song")[1].text.lower().split('\n')[0].strip().split(' ')[0]
 
         self.song_name = song_name
         self.lang = lang.lower().strip()
@@ -155,10 +159,11 @@ class SongLyric():
     def _get_lyrics_from_page(self):
         #wait for load
         sleep(1)
-        self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="lyrics-preview"]/p/a')))
-        self.driver.find_element_by_xpath('//*[@id="lyrics-preview"]/p/a').click()
-        #is the below line really necessary
-        self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="songtranslation"]/div[2]')))
+        try:
+            self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="lyrics-preview"]/p/a')))
+            self.driver.find_element_by_xpath('//*[@id="lyrics-preview"]/p/a').click()
+        except:
+            pass
 
         sleep(1)
         #get "ltf" classes -> there should be 2, one for song lyrics and other for translation lyrics
@@ -166,23 +171,77 @@ class SongLyric():
 
         self.translation_lyrics = list(filter(_line_filter, lyrics[0].text.split('\n')))
         self.song_lyrics = list(filter(_line_filter, lyrics[1].text.split('\n')))
+    
+    def _get_lyrics_from_page_alt(self):
+        #wait for load
+        sleep(1)
+        try:
+            self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="lyrics-preview"]/p/a')))
+            self.driver.find_element_by_xpath('//*[@id="lyrics-preview"]/p/a').click()
+        except:
+            pass
+
+        sleep(1)
+
+        lyrics = self.driver.find_elements_by_class_name("ltf")
+        x = lyrics[0].find_elements_by_tag_name("div")
+        y = lyrics[1].find_elements_by_tag_name("div")
+
+        song_lyrics = [a.text for a in x]
+        tr_lyrics = [a.text for a in y]
+
+        song_ids = [a.get_attribute("class") for a in x]
+        tr_ids = [a.get_attribute("class") for a in y]
+
+        #make sure we didn't lose any data in getting texts and ids
+        assert len(song_lyrics) == len(song_ids)
+        assert len(tr_lyrics) == len(tr_ids)
+
+        filtered_song_ids = [a for a in song_ids if 'll' in a]
+        filtered_tr_ids = [a for a in tr_ids if 'll' in a]
+
+        #lambda fn converts "ll-12-3" into 1203 to correctly sort 12>11 and 3>2
+        all_ids = sorted(list(set(filtered_song_ids).intersection(set(filtered_tr_ids))), key=lambda x: (100*int(x.split('-')[1]) + int(x.split('-')[2]) ))
+
+        self.song_lyrics = []
+        self.translation_lyrics = []
+        for id in all_ids:
+            if id in song_ids and id in tr_ids:
+                song_lyric_idx = song_ids.index(id)
+                tr_lyric_idx = tr_ids.index(id)
+
+                song_lyric = song_lyrics[song_lyric_idx]
+                tr_lyric = tr_lyrics[tr_lyric_idx]
+
+                self.song_lyrics.append(song_lyric)
+                self.translation_lyrics.append(tr_lyric)
 
     def parse_text(self):
         self._get_lyrics_from_page()
 
         if len(self.song_lyrics) != len(self.translation_lyrics):
             #check for different versions and try all versions until one works
-            other_versions = self.driver.find_element_by_xpath('//*[@id="translittab"]').find_elements_by_tag_name('a')
-            for version in other_versions:
-                #click to get that version
-                version.click()
-                #retry get lyrics from page
-                self._get_lyrics_from_page()
+            success = False
+            try:
+                other_versions = self.driver.find_element_by_xpath('//*[@id="translittab"]').find_elements_by_tag_name('a')
+                for version in other_versions:
+                    #click to get that version
+                    version.click()
+                    #retry get lyrics from page
+                    self._get_lyrics_from_page()
 
-                if len(self.song_lyrics) == len(self.translation_lyrics):
-                    break
-        
+                    if len(self.song_lyrics) == len(self.translation_lyrics):
+                        success = True
+                        break
+            except:
+                pass
+
+            if not success:
+                self._get_lyrics_from_page_alt()
+
+                
         assert len(self.song_lyrics) == len(self.translation_lyrics)
+        assert len(self.song_lyrics) > 0
 
     
     def build_mapping(self):
@@ -289,7 +348,6 @@ class SongLyric():
     def finish(self, cleanup=False):
         self.driver.quit()
         if self.display: self.display.stop()
-        
         #overwrite my vocabulary text file with the udpated one
         if self.method != Method.NAIVE and not cleanup:
             _overwrite_vocab_file(self.vocab_filename, self.words_seen_in_this_deck, self.song_name)
@@ -347,7 +405,10 @@ if __name__ == "__main__":
             song.build_mapping()
             song.build_anki_deck()
             song.write_anki_deck_to_file()
+        except Exception as ex:
+            print(ex)
+            import pdb; pdb.set_trace()
         finally:
-            song.finish()
+            song.finish(cleanup=True)
     else:
         print("Usage: LyricsTranslate_url{1}")

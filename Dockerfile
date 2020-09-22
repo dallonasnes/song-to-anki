@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install -y \
     xvfb
 
 # install chromedriver and google-chrome
-
 RUN CHROMEDRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE` && \
     wget https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip && \
     unzip chromedriver_linux64.zip -d /usr/bin && \
@@ -29,9 +28,10 @@ ENV PYTHONUNBUFFERED=1
 ENV APP_HOME /usr/src/app
 WORKDIR /$APP_HOME
 
-COPY ./src $APP_HOME/
+VOLUME ./src/ $APP_HOME/
+COPY ./src/reqs.txt $APP_HOME/
 RUN pip3 install -r reqs.txt
 
 EXPOSE 8000
 
-CMD ["python3", "app.py"]
+#CMD ["python3", "app.py"]
