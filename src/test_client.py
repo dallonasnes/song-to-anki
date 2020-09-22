@@ -40,20 +40,12 @@ def test_stress_test_short():
     r = requests.get(root)
     soup = BeautifulSoup(r.content, "html.parser")
     div = soup.find_all("div", class_="front-new-translations block blockfront clear")[0]
-    hrefs = div.find_all("a", href=True)[:-2]
+    hrefs = div.find_all("a", href=True)[:-2] #cut off the last two hrefs, since they're links to support pages
     assert len(hrefs) == 10
     query_strings = [a['href'] for a in hrefs]
     urls = [unquote(endpoint + root + a) for a in query_strings]
 
-    failed = []
-    #for url in urls:
-    for idx in range(len(urls)):
-        url = urls[idx]
+    for url in urls:
         response = client.get(url)
-        if response.status_code != 200:
-            failed.append(url)
-        else:
-            assert len(response.get_data()) > 0
-    
-    import pdb; pdb.set_trace()
-
+        assert response.status_code == 200
+        assert len(response.get_data()) > 0

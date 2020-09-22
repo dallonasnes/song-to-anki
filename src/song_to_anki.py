@@ -155,37 +155,22 @@ class SongLyric():
 
     def _get_lang_code(self):
         return langcodes.find(self.lang).language
-
-    def _get_lyrics_from_page(self):
+    
+    def _get_lyrics(self):
+        """Idea: only add sentence to (both) lyrics arrays when the line's unique id exists in both arrays of ids"""
         #wait for load
         sleep(1)
         try:
             self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="lyrics-preview"]/p/a')))
             self.driver.find_element_by_xpath('//*[@id="lyrics-preview"]/p/a').click()
+            sleep(1)
         except:
             pass
 
-        sleep(1)
         #get "ltf" classes -> there should be 2, one for song lyrics and other for translation lyrics
         lyrics = self.driver.find_elements_by_class_name("ltf")
-
-        self.translation_lyrics = list(filter(_line_filter, lyrics[0].text.split('\n')))
-        self.song_lyrics = list(filter(_line_filter, lyrics[1].text.split('\n')))
-    
-    def _get_lyrics_from_page_alt(self):
-        #wait for load
-        sleep(1)
-        try:
-            self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="lyrics-preview"]/p/a')))
-            self.driver.find_element_by_xpath('//*[@id="lyrics-preview"]/p/a').click()
-        except:
-            pass
-
-        sleep(1)
-
-        lyrics = self.driver.find_elements_by_class_name("ltf")
-        x = lyrics[0].find_elements_by_tag_name("div")
-        y = lyrics[1].find_elements_by_tag_name("div")
+        x = lyrics[1].find_elements_by_tag_name("div")
+        y = lyrics[0].find_elements_by_tag_name("div")
 
         song_lyrics = [a.text for a in x]
         tr_lyrics = [a.text for a in y]
@@ -213,33 +198,26 @@ class SongLyric():
                 song_lyric = song_lyrics[song_lyric_idx]
                 tr_lyric = tr_lyrics[tr_lyric_idx]
 
-                self.song_lyrics.append(song_lyric)
-                self.translation_lyrics.append(tr_lyric)
+                #don't want to make cards for thinks like "[refrain]"
+                if '[' not in song_lyric and '[' not in tr_lyric:
+                    self.song_lyrics.append(song_lyric)
+                    self.translation_lyrics.append(tr_lyric)
 
     def parse_text(self):
-        self._get_lyrics_from_page()
+        self._get_lyrics()
 
         if len(self.song_lyrics) != len(self.translation_lyrics):
             #check for different versions and try all versions until one works
-            success = False
-            try:
-                other_versions = self.driver.find_element_by_xpath('//*[@id="translittab"]').find_elements_by_tag_name('a')
-                for version in other_versions:
-                    #click to get that version
-                    version.click()
-                    #retry get lyrics from page
-                    self._get_lyrics_from_page()
+            other_versions = self.driver.find_element_by_xpath('//*[@id="translittab"]').find_elements_by_tag_name('a')
+            for version in other_versions:
+                #click to get that version
+                version.click()
+                #retry get lyrics from page
+                self._get_lyrics()
 
-                    if len(self.song_lyrics) == len(self.translation_lyrics):
-                        success = True
-                        break
-            except:
-                pass
+                if len(self.song_lyrics) == len(self.translation_lyrics):
+                    break
 
-            if not success:
-                self._get_lyrics_from_page_alt()
-
-                
         assert len(self.song_lyrics) == len(self.translation_lyrics)
         assert len(self.song_lyrics) > 0
 
@@ -409,6 +387,6 @@ if __name__ == "__main__":
             print(ex)
             import pdb; pdb.set_trace()
         finally:
-            song.finish(cleanup=True)
+            song.finish(cleanup=False)
     else:
         print("Usage: LyricsTranslate_url{1}")
