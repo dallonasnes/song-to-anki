@@ -85,9 +85,8 @@ def _zip_apkg(deck_path):
     return fout_zip
 
 class Method(Enum):
-    NAIVE = 0
-    NLP = 1
-    WORD_FREQ = 2
+    NLP = 0
+    WORD_FREQ = 1
 
 CLOZE_LIMIT = 2
 MAX_RETRIES = 5
@@ -97,7 +96,7 @@ def _line_filter(line):
 
 class SongLyric():
 
-    def __init__(self, url, method=Method.NAIVE, api=False):
+    def __init__(self, url, method=Method.WORD_FREQ, api=False):
         self.url = url
         self.method = method
         self.api = api
@@ -142,16 +141,14 @@ class SongLyric():
         self.lang = lang.lower().strip()
         self.vocab_filename = "vocabs/" + self.lang + uuid.uuid4().hex + "vocab.txt"
         self.lang_code = self._get_lang_code()
+        self.words_seen_in_this_deck = set()
+        self.my_vocabulary: Set[str] = _get_my_vocab_for_lang(self.vocab_filename)
 
         if self.method == Method.NLP:
             import spacy
-            #only need these things if not using naive method of creating cloze deletion cards
             self.nlp = _try_get_nlp_for_lang(self.lang)
             self.stop_words = _get_stop_words_for_lang(self.lang)
         
-        if self.method != Method.NAIVE:
-            self.words_seen_in_this_deck = set()
-            self.my_vocabulary: Set[str] = _get_my_vocab_for_lang(self.vocab_filename)
 
     def _get_lang_code(self):
         return langcodes.find(self.lang).language
@@ -245,7 +242,6 @@ class SongLyric():
     def build_anki_deck(self):
         self.notes = []
         for lyric, translation in self.mapping.items():
-            #build cloze sentence by naively grabbing the first word
             cloze_sentence, translation = self.build_cloze_deletion_sentence(lyric, translation)
             fields = [cloze_sentence, translation]
             my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
@@ -260,6 +256,7 @@ class SongLyric():
         #cleanse of stop words and cloze words/phrases that aren't in my vocabulary (database? restAPI?)
         
         cloze_sentence = [word for word in lyric.split(' ')]
+        
         #sometimes the last char of the last word in translation is a number referencing a footnote
         #delete that when it happens - but ensure the word isn't just a digit because that could be meaningful
         translation_tokens = translation.split(' ')
@@ -268,13 +265,7 @@ class SongLyric():
             last_word = last_word[:-1]
             translation_tokens[-1] = last_word
 
-        #naive implementation first - just use the first word
-        if self.method == Method.NAIVE:
-            first_word = cloze_sentence[0]
-            cloze = "{{c1::" + first_word +"}}"
-            cloze_sentence[0] = cloze
-
-        elif self.method == Method.WORD_FREQ:
+        if self.method == Method.WORD_FREQ:
             #sort words from least frequent to most frequent based on freq score
             word_freq_scores = sorted([(word, zipf_frequency(word, self.lang_code)) for word in cloze_sentence], key=lambda x: x[1])
             assert len(word_freq_scores) == len(cloze_sentence)
@@ -326,9 +317,6 @@ class SongLyric():
     def finish(self, cleanup=False):
         self.driver.quit()
         if self.display: self.display.stop()
-        #overwrite my vocabulary text file with the udpated one
-        if self.method != Method.NAIVE and not cleanup:
-            _overwrite_vocab_file(self.vocab_filename, self.words_seen_in_this_deck, self.song_name)
         
         if cleanup:
             try:
@@ -336,6 +324,12 @@ class SongLyric():
                 if self.anki_deck_path: os.remove(self.anki_deck_path)
             except OSError:
                 pass
+
+        else:
+            #overwrite my vocabulary text file with the udpated one
+            _overwrite_vocab_file(self.vocab_filename, self.words_seen_in_this_deck, self.song_name)
+        
+        
 
 def _try_get_nlp_for_lang(lang):
     if lang == "french":
