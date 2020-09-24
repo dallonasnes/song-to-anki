@@ -135,3 +135,9 @@ Invalid url: file:///users/file.txt	***
 Invalid url: http://localhost:8080	***	
 *** Exception on 22/09/2020 18:27:01 	***
 Invalid url: https://google.com	***	
+*** Exception on 23/09/2020 03:03:48 	***
+Invalid url: file:///users/file.txt	***	
+*** Exception on 23/09/2020 03:03:48 	***
+Invalid url: http://localhost:8080	***	
+*** Exception on 23/09/2020 03:03:48 	***
+Invalid url: https://google.com	***	

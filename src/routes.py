@@ -9,8 +9,12 @@ def configure_routes(app):
     #####################################
     #HTTP Handlers
     #####################################
+    @app.route("/song-req", methods=['PUT'])
+    def song_req():
+        pass
+
     @app.route("/ankify-lyrics", methods=['GET'])
-    def handle_text():
+    def ankify_lyrics():
         try:
             url = request.args.get('targetUrl').strip()
             #get and validate url before continuing
@@ -24,7 +28,7 @@ def configure_routes(app):
                 song.build_mapping()
                 song.build_anki_deck()
                 song.write_anki_deck_to_file()
-                song.get_anki_deck_as_binary()
+                #song.get_anki_deck_as_binary()
 
             except Exception as exc:
                 song.finish(cleanup=True)
