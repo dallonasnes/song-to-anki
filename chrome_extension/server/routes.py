@@ -9,10 +9,9 @@ def configure_routes(app):
     #####################################
     #HTTP Handlers
     #####################################
-    @app.route("/lyrics-to-anki", methods=['PUT', 'POST'])
+    @app.route("/lyrics-to-anki", methods=['PUT'])
     def song_req():
         try:
-            import pdb; pdb.set_trace()
             obj = request.get_json()
             lyrics = obj['lyrics']
             song_name = obj['song_name']
@@ -27,6 +26,7 @@ def configure_routes(app):
             return response
 
         except Exception as ex:
+            print(ex)
             log_exception(ex)
             return json_failure({"exception": str(ex)})
 

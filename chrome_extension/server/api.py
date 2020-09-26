@@ -68,7 +68,6 @@ class Lyrics():
         self.lang_code = _get_lang_code(self.song_lang)
         self.words_seen_in_this_deck = set()
         self.anki_deck_path = None
-        import pdb; pdb.set_trace()
 
     def build_anki_deck(self):
         self.notes = []
