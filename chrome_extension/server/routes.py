@@ -9,9 +9,10 @@ def configure_routes(app):
     #####################################
     #HTTP Handlers
     #####################################
-    @app.route("/lyrics-to-anki", methods=['PUT'])
+    @app.route("/lyrics-to-anki", methods=['PUT', 'POST'])
     def song_req():
         try:
+            import pdb; pdb.set_trace()
             obj = request.get_json()
             lyrics = obj['lyrics']
             song_name = obj['song_name']

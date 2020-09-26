@@ -1,0 +1,6 @@
+*** Exception on 26/09/2020 12:59:45 	***
+'NoneType' object is not subscriptable	***	
+*** Exception on 26/09/2020 13:07:45 	***
+'NoneType' object is not subscriptable	***	
+*** Exception on 26/09/2020 13:08:42 	***
+'Lyrics' object has no attribute 'my_vocabulary'	***	
