@@ -109,6 +109,7 @@ class SongLyric():
 
         #chromedriver setup
         options = Options()
+        options.add_argument('--headless')
 
         if api:
             self.display = Display(visible=0, size=(800, 600))
@@ -116,7 +117,6 @@ class SongLyric():
 
             #options.headless = True
             options.add_argument('--disable-extensions')
-            options.add_argument('--headless')
             options.add_argument('--disable-gpu')
             options.add_argument('--no-sandbox')
             options.add_experimental_option('prefs', {
