@@ -30,8 +30,12 @@ changeColor.onclick = function(element) {
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
       let data = request.data;
-      let file = new File([data], "package.apkg")
-      var url = URL.createObjectURL(file);
+      var bytes = new Uint8Array(data.length);
+        for (var i=0; i<bytes.length; i++) {
+        bytes[i] = data.charCodeAt(i);            
+        }             
+        var blob = new Blob([bytes], {type: "application/apkg"});
+      var url = URL.createObjectURL(blob);
     chrome.downloads.download({
         url: url, // The object URL can be used as download URL
         filename: "test.apkg"
