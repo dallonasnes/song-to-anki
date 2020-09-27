@@ -4,3 +4,9 @@
 'NoneType' object is not subscriptable	***	
 *** Exception on 26/09/2020 13:08:42 	***
 'Lyrics' object has no attribute 'my_vocabulary'	***	
+*** Exception on 26/09/2020 20:25:25 	***
+'Lyrics' object has no attribute 'my_vocabulary'	***	
+*** Exception on 26/09/2020 20:27:30 	***
+[Errno 2] No such file or directory: 'decks/test.apkg'	***	
+*** Exception on 26/09/2020 20:30:33 	***
+	***	
