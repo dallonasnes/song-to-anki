@@ -17,11 +17,32 @@ def configure_routes(app):
     def ankify_lyrics():
         try:
             url = request.args.get('targetUrl').strip()
+            #allow empty language specifications, and just use the default from the page
+            target_language = (request.args.get('targetLanguage') or "").strip().lower()
+            base_language = (request.args.get('baseLanguage') or "").strip().lower()
+
+            ###############
+            # validate incoming args
+            ###############
             #get and validate url before continuing
             if not validators.url(url) or LYRICS_TRANSLATE not in url.lower():
                 raise Exception("Invalid url: " + url)
+            
+            #validate language specs if not empty
+            if target_language and not target_language.isalpha():
+                raise Exception("Invalid input language arguments: {}".format(target_language))
+            
+            if base_language and not base_language.isalpha():
+                raise Exception("Invalid input language arguments: {}".format(base_language))
 
-            song = SongLyric(url, Method.WORD_FREQ, api=True)
+            #can't make translation into the same language
+            if target_language and target_language == base_language:
+                raise Exception("Target and base language are the same: {}".format(target_language))
+            
+            ###############
+            # construct object and build anki set
+            ###############
+            song = SongLyric(url, target_language, base_language, Method.WORD_FREQ, api=True)
             try:
                 song.populate_metadata()
                 song.parse_text()
