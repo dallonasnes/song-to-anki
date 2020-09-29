@@ -141,3 +141,101 @@ Invalid url: file:///users/file.txt	***
 Invalid url: http://localhost:8080	***	
 *** Exception on 23/09/2020 03:03:48 	***
 Invalid url: https://google.com	***	
+*** Exception on 28/09/2020 20:03:30 	***
+'NoneType' object has no attribute 'strip'	***	
+*** Exception on 28/09/2020 20:03:30 	***
+Invalid input language arguments: <i"mb_ad>/javascript AND test	***	
+*** Exception on 28/09/2020 20:03:30 	***
+Invalid url: file:///users/file.txt	***	
+*** Exception on 28/09/2020 20:03:30 	***
+Invalid url: http://localhost:8080	***	
+*** Exception on 28/09/2020 20:03:30 	***
+Invalid url: https://google.com	***	
+*** Exception on 28/09/2020 20:23:04 	***
+'NoneType' object has no attribute 'strip'	***	
+*** Exception on 28/09/2020 20:23:04 	***
+Invalid input language arguments: <i"mb_ad>/javascript AND test	***	
+*** Exception on 28/09/2020 20:23:04 	***
+Invalid url: file:///users/file.txt	***	
+*** Exception on 28/09/2020 20:23:04 	***
+Invalid url: http://localhost:8080	***	
+*** Exception on 28/09/2020 20:23:04 	***
+Invalid url: https://google.com	***	
+*** Exception on 28/09/2020 20:23:25 	***
+Base language found on page doesn't match base language specified	***	
+*** Exception on 28/09/2020 20:29:15 	***
+'NoneType' object has no attribute 'strip'	***	
+*** Exception on 28/09/2020 20:29:15 	***
+Invalid input language arguments: <i"mb_ad>/javascript AND test	***	
+*** Exception on 28/09/2020 20:29:16 	***
+Invalid url: file:///users/file.txt	***	
+*** Exception on 28/09/2020 20:29:16 	***
+Invalid url: http://localhost:8080	***	
+*** Exception on 28/09/2020 20:29:16 	***
+Invalid url: https://google.com	***	
+*** Exception on 28/09/2020 20:29:30 	***
+'NoneType' object has no attribute 'strip'	***	
+*** Exception on 28/09/2020 20:29:30 	***
+'NoneType' object has no attribute 'strip'	***	
+*** Exception on 28/09/2020 20:29:41 	***
+Base language found on page doesn't match base language specified	***	
+*** Exception on 28/09/2020 20:29:54 	***
+Target language found on page doesn't match target language specified	***	
+*** Exception on 28/09/2020 20:35:10 	***
+'NoneType' object has no attribute 'strip'	***	
+*** Exception on 28/09/2020 20:36:03 	***
+Invalid input language arguments: french AND 	***	
+*** Exception on 28/09/2020 20:36:40 	***
+Invalid input language arguments: french AND 	***	
+*** Exception on 28/09/2020 20:39:40 	***
+Invalid input language arguments: <i"mb_ad>/javascript	***	
+*** Exception on 28/09/2020 20:39:40 	***
+Invalid url: file:///users/file.txt	***	
+*** Exception on 28/09/2020 20:39:40 	***
+Invalid url: http://localhost:8080	***	
+*** Exception on 28/09/2020 20:39:40 	***
+Invalid url: https://google.com	***	
+*** Exception on 28/09/2020 20:40:35 	***
+Base language found on page doesn't match base language specified	***	
+*** Exception on 28/09/2020 20:40:43 	***
+Target language found on page doesn't match target language specified	***	
+*** Exception on 28/09/2020 20:41:27 	***
+Invalid input language arguments: <i"mb_ad>/javascript	***	
+*** Exception on 28/09/2020 20:41:27 	***
+Invalid url: file:///users/file.txt	***	
+*** Exception on 28/09/2020 20:41:27 	***
+Invalid url: http://localhost:8080	***	
+*** Exception on 28/09/2020 20:41:27 	***
+Invalid url: https://google.com	***	
+*** Exception on 28/09/2020 20:42:22 	***
+Base language found on page doesn't match base language specified	***	
+*** Exception on 28/09/2020 20:42:29 	***
+Target language found on page doesn't match target language specified	***	
+*** Exception on 28/09/2020 20:44:50 	***
+Invalid input language arguments: <i"mb_ad>/javascript	***	
+*** Exception on 28/09/2020 20:44:50 	***
+Invalid url: file:///users/file.txt	***	
+*** Exception on 28/09/2020 20:44:50 	***
+Invalid url: http://localhost:8080	***	
+*** Exception on 28/09/2020 20:44:50 	***
+Invalid url: https://google.com	***	
+*** Exception on 28/09/2020 20:45:41 	***
+Base language found on page doesn't match base language specified	***	
+*** Exception on 28/09/2020 20:45:53 	***
+Target language found on page doesn't match target language specified	***	
+*** Exception on 28/09/2020 20:48:25 	***
+Message: no such element: Unable to locate element: {"method":"css selector","selector":".song-node-info-album"}
+  (Session info: headless chrome=85.0.4183.121)
+	***	
+*** Exception on 28/09/2020 20:55:57 	***
+Invalid input language arguments: <i"mb_ad>/javascript	***	
+*** Exception on 28/09/2020 20:55:57 	***
+Invalid url: file:///users/file.txt	***	
+*** Exception on 28/09/2020 20:55:57 	***
+Invalid url: http://localhost:8080	***	
+*** Exception on 28/09/2020 20:55:57 	***
+Invalid url: https://google.com	***	
+*** Exception on 28/09/2020 20:56:58 	***
+Base language found on page doesn't match base language specified	***	
+*** Exception on 28/09/2020 20:57:06 	***
+Target language found on page doesn't match target language specified	***	

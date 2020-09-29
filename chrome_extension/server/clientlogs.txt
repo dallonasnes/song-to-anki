@@ -1,0 +1,42 @@
+*** Exception on 29/09/2020 11:51:36 	***
+{}	***	
+*** Exception on 29/09/2020 11:51:37 	***
+517	***	
+*** Exception on 29/09/2020 11:54:06 	***
+{}	***	
+*** Exception on 29/09/2020 11:54:06 	***
+518	***	
+*** Exception on 29/09/2020 11:58:15 	***
+{}	***	
+*** Exception on 29/09/2020 11:58:16 	***
+519	***	
+*** Exception on 29/09/2020 12:01:11 	***
+{}	***	
+*** Exception on 29/09/2020 12:01:12 	***
+520	***	
+*** Exception on 29/09/2020 12:03:30 	***
+Error: Unable to parse songname from url https://lyricstranslate.com/en/divar-wall.html-0	***	
+*** Exception on 29/09/2020 12:03:30 	***
+521	***	
+*** Exception on 29/09/2020 12:04:21 	***
+{}	***	
+*** Exception on 29/09/2020 12:04:21 	***
+522	***	
+*** Exception on 29/09/2020 12:07:12 	***
+[object Object]	***	
+*** Exception on 29/09/2020 12:07:13 	***
+523	***	
+*** Exception on 29/09/2020 12:10:22 	***
+Error: Unable to parse songname from url https://lyricstranslate.com/en/divar-wall.html-0	***	
+*** Exception on 29/09/2020 12:10:22 	***
+524	***	
+*** Exception on 29/09/2020 12:11:34 	***
+Error: Unable to parse songname from url https://lyricstranslate.com/en/divar-wall.html-0	***	
+*** Exception on 29/09/2020 12:11:34 	***
+525	***	
+*** Exception on 29/09/2020 12:12:55 	***
+Error: Unable to parse songname from url https://lyricstranslate.com/en/divar-wall.html-0	***	
+*** Exception on 29/09/2020 12:12:56 	***
+526	***	
+*** Exception on 29/09/2020 12:14:19 	***
+Error: Unable to parse songname from url https://lyricstranslate.com/en/divar-wall.html-0	***	

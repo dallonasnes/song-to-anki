@@ -96,19 +96,25 @@ def _line_filter(line):
 
 class SongLyric():
 
-    def __init__(self, url, method=Method.WORD_FREQ, api=False):
+    def __init__(self, url, target_language, base_language, method=Method.WORD_FREQ, api=False):
         self.url = url
+        self.target_language = target_language.lower().strip()
+        self.base_language = base_language.lower().strip()
         self.method = method
         self.api = api
         self.anki_deck_path = None
         self.display = None
         self.vocab_filename = None
         self.song_name = None
-        self.lang = None
+        self.found_target_lang = None
+        self.found_base_lang = None
         self.lang_code = None
+        self.words_seen_in_this_deck = None
+        self.flip_indicator = False #used to indicate if translation and song lyrics are in reverse order
 
         #chromedriver setup
         options = Options()
+        options.add_argument('--headless')
 
         if api:
             self.display = Display(visible=0, size=(800, 600))
@@ -116,7 +122,6 @@ class SongLyric():
 
             #options.headless = True
             options.add_argument('--disable-extensions')
-            options.add_argument('--headless')
             options.add_argument('--disable-gpu')
             options.add_argument('--no-sandbox')
             options.add_experimental_option('prefs', {
@@ -129,29 +134,50 @@ class SongLyric():
 
     def populate_metadata(self):
         self.driver.get(self.url)
-        
         sleep(1)
-        song_name = self.driver.find_element_by_class_name("song-node-info-album").find_element_by_tag_name("a").text
         try:
-            lang = self.driver.find_element_by_class_name("song-langs-preview-visible").text.lower()
+            self.song_name = self.driver.find_element_by_class_name("song-node-info-album").find_element_by_tag_name("a").text
         except:
-            lang = self.driver.find_elements_by_class_name("langsmall-song")[1].text.lower().split('\n')[0].strip().split(' ')[0]
+            #can try to get song name from url bar instead
+            import pdb; pdb.set_trace()
+            self.song_name = "mySongName"
+        try:
+            self.found_base_lang = self.driver.find_elements_by_class_name("langsmall-song")[0].text.lower().split('\n')[0].strip().split(' ')[0].lower().strip().split('/')[0]
+            self.found_target_lang = self.driver.find_elements_by_class_name("langsmall-song")[1].text.lower().split('\n')[0].strip().split(' ')[0].lower().strip().split('/')[0]
+        except:
+            #target_lang = self.driver.find_element_by_class_name("song-langs-preview-visible").text.lower()
+            raise Exception("Unable to parse base: {} and target: {} langs from webpage".format(self.found_base_lang, self.found_target_lang))
 
-        self.song_name = song_name
-        self.lang = lang.lower().strip()
-        self.vocab_filename = "vocabs/" + self.lang + uuid.uuid4().hex + "vocab.txt"
+        #if target lang and grabbed lang don't match up, need to flip them around
+        if self.target_language:
+            if self.found_target_lang != self.target_language:
+                temp = self.found_target_lang
+                self.found_target_lang = self.found_base_lang
+                self.found_base_lang = temp
+                self.flip_indicator = True
+                #if they still don't match after the flip, then raise exception
+                if self.found_target_lang != self.target_language:
+                    raise Exception("Target language found on page doesn't match target language specified")
+            
+        #at this point, target language is correct, so we won't change it from here
+        # if a base lang was specified and it's bad, then we throw an error
+        if self.base_language and self.found_base_lang != self.base_language:
+            raise Exception("Base language found on page doesn't match base language specified")
+
+
+        self.vocab_filename = "vocabs/" + self.found_target_lang + uuid.uuid4().hex + "vocab.txt"
         self.lang_code = self._get_lang_code()
         self.words_seen_in_this_deck = set()
         self.my_vocabulary: Set[str] = _get_my_vocab_for_lang(self.vocab_filename)
 
         if self.method == Method.NLP:
             import spacy
-            self.nlp = _try_get_nlp_for_lang(self.lang)
-            self.stop_words = _get_stop_words_for_lang(self.lang)
+            self.nlp = _try_get_nlp_for_lang(self.found_target_lang)
+            self.stop_words = _get_stop_words_for_lang(self.found_target_lang)
         
 
     def _get_lang_code(self):
-        return langcodes.find(self.lang).language
+        return langcodes.find(self.found_target_lang).language
     
     def _get_lyrics(self):
         """Idea: only add sentence to (both) lyrics arrays when the line's unique id exists in both arrays of ids"""
@@ -166,8 +192,13 @@ class SongLyric():
 
         #get "ltf" classes -> there should be 2, one for song lyrics and other for translation lyrics
         lyrics = self.driver.find_elements_by_class_name("ltf")
-        x = lyrics[1].find_elements_by_tag_name("div")
-        y = lyrics[0].find_elements_by_tag_name("div")
+        if self.flip_indicator:
+            y = lyrics[1].find_elements_by_tag_name("div")
+            x = lyrics[0].find_elements_by_tag_name("div")
+        else:
+            x = lyrics[1].find_elements_by_tag_name("div")
+            y = lyrics[0].find_elements_by_tag_name("div")
+        
 
         song_lyrics = [a.text for a in x]
         tr_lyrics = [a.text for a in y]
@@ -325,7 +356,7 @@ class SongLyric():
             except OSError:
                 pass
 
-        else:
+        elif self.words_seen_in_this_deck:
             #overwrite my vocabulary text file with the udpated one
             _overwrite_vocab_file(self.vocab_filename, self.words_seen_in_this_deck, self.song_name)
         
@@ -368,9 +399,11 @@ def _get_stop_words_for_lang(lang):
 
 if __name__ == "__main__":
     args = sys.argv
-    if len(args) == 2:
+    if len(args) == 4:
         url = args[1]
-        song = SongLyric(url, Method.WORD_FREQ)
+        target_language = args[2]
+        base_language = args[3]
+        song = SongLyric(url, target_language, base_language, Method.WORD_FREQ)
         try:
             song.populate_metadata()
             song.parse_text()
@@ -383,4 +416,4 @@ if __name__ == "__main__":
         finally:
             song.finish(cleanup=False)
     else:
-        print("Usage: LyricsTranslate_url{1}")
+        print("Usage: LyricsTranslate_url{1} TargetLanguage{2} BaseLanguage{3}")
