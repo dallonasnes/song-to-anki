@@ -46,6 +46,8 @@ def configure_routes(app):
                 contentMsg = get_error_content_message(request, errorContext)
                 subjectMsg = "client side exception"
                 send_email(subjectMsg, contentMsg)
+            
+            return json_success({"emailSent": sendAlertIndicator})
 
         except Exception as ex:
             contentMsg = get_error_content_message(request, ex)

@@ -1,3 +1,10 @@
+function sendLogMessage(err, alertIndicator){
+    //pass strings instead of errors
+    chrome.runtime.sendMessage({action: 'readyWithError', errData: err.toString(), alertIndicator: alertIndicator.toString()}, function(response){
+        //do nothing
+    });
+};
+
 function filterLine(x){
     return (100 * parseInt(x.split('-')[1])) + parseInt(x.split('-')[2]);
   };
@@ -93,13 +100,16 @@ function sleep(ms) {
                                 songname = window.location.href.slice(0, window.location.href.indexOf('.html')).split('/').pop();
                             } catch (er) {
                                 //console.log(er);
-                                logErrorAtServer(new Error("Unable to parse songname from url " + window.location.href), true);
-                                songname = "mySongLyrics";
+                                sendLogMessage(new Error("Unable to parse songname from url " + window.location.href), true);
                             }
                         }
 
                         //now have to cleanse the song name of any punctuation and extra spaces
-                        songname = songname.replace(/[.,\/#!$%\?^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ");
+                        if (songname){
+                            songname = songname.replace(/[.,\/#!$%\?^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ");
+                        } else {
+                            songname = "mySongLyrics";
+                        }
 
                         //save songname to local storage
                         chrome.storage.local.set({songName: songname}, function(resp) {
@@ -117,7 +127,7 @@ function sleep(ms) {
             });
         } else {
             //need to log url that was unable to process this request
-            logErrorAtServer(new Error("Unable to parse both sets of lyrics from webpage " + window.location.href), true);
+            sendLogMessage(new Error("Unable to parse both sets of lyrics from webpage " + window.location.href), true);
         }
     }
 })();

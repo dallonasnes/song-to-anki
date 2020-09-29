@@ -15,8 +15,8 @@ const HOST = "http://localhost:8000/";
 function logErrorAtServer(err, alertIndicator){
     const baseUrl = HOST + "log-client-error";
     const data = {
-        ex: str(err),
-        sendAlert: alertIndicator
+        errorContext: err.toString(),
+        sendAlert: alertIndicator.toString()
     };
 
     const options = {
@@ -34,7 +34,7 @@ function logErrorAtServer(err, alertIndicator){
             } else {
                 console.log("Log error at server response has incorrect status code of : " + res.status + " with status text: " + res.statusText);
             }
-        }).catch(err=>console.log(err));
+        }).catch(err=>console.log(err.toString()));
 };
 
 function makeRequest(mapping, songName, songLang, pageUrl){
@@ -67,9 +67,9 @@ function makeRequest(mapping, songName, songLang, pageUrl){
                 filename: songName + ".apkg"
                 //...
             }, function(e){
-                logErrorAtServer(e, false);
+                //don't need to do anything here
             });
-        }).catch(err=>logErrorAtServer(err, true));
+        }).catch(err=>logErrorAtServer(err.toString(), true));
 };
 
 
@@ -96,6 +96,8 @@ chrome.runtime.onMessage.addListener(
                 });
             });
         });
+      } else if (request.action === "logError"){
+        logErrorAtServer(request.errData, request.alertIndicator);
       }
 
       sendResponse({close: true});

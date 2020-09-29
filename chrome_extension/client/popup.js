@@ -33,5 +33,13 @@ chrome.runtime.onMessage.addListener(
           });
         });
       }
+      else if (request.action === "readyWithError"){
+        chrome.tabs.create({ url: "https://google.com" , active: false}, function(tab) {
+          chrome.runtime.sendMessage({action: 'logError', errData: request.errData, alertIndicator: request.alertIndicator}, function(response){
+              chrome.tabs.remove(tab.id);
+              sendResponse({close: true});
+          });
+        });
+      }
   }
 );
