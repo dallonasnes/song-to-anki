@@ -1,0 +1,1 @@
+To give this a try, clone the repo and make sure your Docker installation has permissions to mount a volume to your directory of choice. Then run `bash build.sh` and `bash run.sh`. You can run the test suite with `pytest test_client.py` within the docker container.
