@@ -3,6 +3,7 @@ cached-property==1.5.2
 certifi==2020.6.20
 chardet==3.0.4
 click==7.1.2
+decorator==4.4.2
 fancycompleter==0.9.1
 Flask==1.1.2
 frozendict==1.2
@@ -25,12 +26,16 @@ pyparsing==2.4.7
 pyrepl==0.9.0
 pystache==0.5.4
 pytest==6.0.2
+python-http-client==3.3.1
 PyYAML==5.3.1
 regex==2020.7.14
 requests==2.24.0
+sendgrid==6.4.7
 six==1.15.0
+starkbank-ecdsa==1.1.0
 toml==0.10.1
 urllib3==1.25.10
+validators==0.18.1
 Werkzeug==1.0.1
 wmctrl==0.3
 wordfreq==2.3.2
