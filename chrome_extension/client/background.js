@@ -10,13 +10,40 @@ chrome.runtime.onInstalled.addListener(function (){
     });
 });
 
-function makeRequest(mapping, songName, songLang){
-    const baseUrl = "http://localhost:8000/lyrics-to-anki";
-    console.log("just made the request");
+const HOST = "http://localhost:8000/";
+
+function logErrorAtServer(err, alertIndicator){
+    const baseUrl = HOST + "log-client-error";
+    const data = {
+        ex: str(err),
+        sendAlert: alertIndicator
+    };
+
+    const options = {
+        method: "PUT",
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    fetch(baseUrl, options)
+        .then(res=> {
+            if (res.status == 200){
+                //do nothing
+            } else {
+                console.log("Log error at server response has incorrect status code of : " + res.status + " with status text: " + res.statusText);
+            }
+        }).catch(err=>console.log(err));
+};
+
+function makeRequest(mapping, songName, songLang, pageUrl){
+    const baseUrl = HOST + "lyrics-to-anki";
     const data = {
         song_name: songName,
         song_lang: songLang,
-        lyrics: mapping
+        lyrics: mapping,
+        pageUrl: pageUrl
     }
 
     const options = {
@@ -32,7 +59,7 @@ function makeRequest(mapping, songName, songLang){
             if (res.status == 200){
                 return res.blob();
             } else {
-                throw Error("Response has incorrect status code of : " + res.status + " with status text: " + res.statusText);
+                throw Error("Server response to process lyrics from pageUrl: " + pageUrl + " has incorrect status code of : " + res.status + " with status text: " + res.statusText);
             }
         }).then(blob=>{
             chrome.downloads.download({
@@ -40,9 +67,9 @@ function makeRequest(mapping, songName, songLang){
                 filename: songName + ".apkg"
                 //...
             }, function(e){
-                console.log(e);
+                logErrorAtServer(e, false);
             });
-        }).catch(err=>console.log(err));
+        }).catch(err=>logErrorAtServer(err, true));
 };
 
 
@@ -52,6 +79,7 @@ chrome.runtime.onMessage.addListener(
         let finalMap;
         let songName;
         let songLang;
+        let pageUrl;
         //first get the mapping
         //on callback, then get the song name
         //on last callback, get song target lang and send request to server
@@ -61,7 +89,10 @@ chrome.runtime.onMessage.addListener(
                 songName = data.songName;
                 chrome.storage.local.get('songLang', function(data){
                     songLang = data.songLang;
-                    makeRequest(finalMap, songName, songLang);
+                    chrome.storage.local.get('pageUrl', function(data){
+                        pageUrl = data.pageUrl;
+                        makeRequest(finalMap, songName, songLang, pageUrl);
+                    });
                 });
             });
         });

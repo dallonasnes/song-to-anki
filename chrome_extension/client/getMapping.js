@@ -14,7 +14,7 @@ function sleep(ms) {
             try {
                 document.getElementsByClassName("dottedlink")[0].click();
             } catch (error){
-                console.log(error);
+                //console.log(error);
             }
             //now get lyrics again after a quick break
             await sleep(500);
@@ -35,7 +35,7 @@ function sleep(ms) {
                 try {
                     foundTargetLang = document.getElementsByClassName("langsmall-song")[1].innerText.trim().toLowerCase().split('\n')[0].trim().split('/')[0].trim();
                 } catch (error){
-                    console.log(error);
+                    //console.log(error);
                 }
 
                 //if the target lang is different, then we flip
@@ -87,24 +87,29 @@ function sleep(ms) {
                         try {
                             songname = document.getElementsByClassName("song-node-info-album")[0].getElementsByTagName("a")[0].innerText;
                         } catch (error){
-                        console.log(error);
-                        //try again to get it, this time from URL bar
-                        try {
-                            songname = window.location.href.slice(0, window.location.href.indexOf('.html')).split('/').pop();
-                        } catch (er) {
-                            console.log(er);
-                            songname = "mySongLyrics";
+                            //console.log(error);
+                            //try again to get it, this time from URL bar
+                            try {
+                                songname = window.location.href.slice(0, window.location.href.indexOf('.html')).split('/').pop();
+                            } catch (er) {
+                                //console.log(er);
+                                logErrorAtServer(new Error("Unable to parse songname from url " + window.location.href), true);
+                                songname = "mySongLyrics";
                             }
                         }
 
                         //now have to cleanse the song name of any punctuation and extra spaces
                         songname = songname.replace(/[.,\/#!$%\?^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ");
 
-                        //save songname to local storage and send ping in callback
+                        //save songname to local storage
                         chrome.storage.local.set({songName: songname}, function(resp) {
-                        //once that completes, send a runtime message to open next tab and send data
-                            chrome.runtime.sendMessage({action: 'savedMapping'}, function(response){
-                                //do nothing here
+
+                            //save pageUrl to local storage
+                            chrome.storage.local.set({pageUrl: window.location.href}, function(resp){
+                                //once that completes, send a runtime message to open next tab and send data
+                                chrome.runtime.sendMessage({action: 'savedMapping'}, function(response){
+                                    //do nothing here
+                                });
                             });
                         });
                     });
@@ -112,6 +117,7 @@ function sleep(ms) {
             });
         } else {
             //need to log url that was unable to process this request
+            logErrorAtServer(new Error("Unable to parse both sets of lyrics from webpage " + window.location.href), true);
         }
     }
 })();
