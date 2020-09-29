@@ -10,14 +10,17 @@
       </style>
     </head>
     <body>
-      <form>
-          <label for="songLangInput">Which is the target language?:</label>
+      <form style: id="form">
+          <label for="songLangInput" name="textAboveInput">Which language are you learning?<br></label>
           <input type="text" id="songLangInput" name="songLangInput"><br><br>
+          <label id="chooseValidTargetLang">If neither of these is your target language, navigate to the translation page you want and try again.<br><br></label>
           <input type="submit" id="submit" value="Submit">
       </form>
-      
+
       <script src="jquery.min.js"></script>
       <script src="download.min.js"></script>
       <script src="popup.js"></script>
+      
+      
     </body>
   </html>

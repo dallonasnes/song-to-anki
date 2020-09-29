@@ -39,7 +39,9 @@ function sleep(ms) {
                 targetLang = data.songLang.toLowerCase().trim();
                 //if a target lang was specified, make sure we get it right
                 let foundTargetLang;
+                let foundBaseLang;
                 try {
+                    foundBaseLang = document.getElementsByClassName("langsmall-song")[0].innerText.trim().toLowerCase().split('\n')[0].trim().split('/')[0].trim();
                     foundTargetLang = document.getElementsByClassName("langsmall-song")[1].innerText.trim().toLowerCase().split('\n')[0].trim().split('/')[0].trim();
                 } catch (error){
                     //console.log(error);
@@ -50,6 +52,23 @@ function sleep(ms) {
                     let temp = ya;
                     ya = xa;
                     xa = temp;
+
+                    //now rearrange found base and found target lang to align with input target
+                    let newTemp = foundTargetLang;
+                    foundTargetLang = foundBaseLang;
+                    foundBaseLang = newTemp;
+
+                    //if still not equal, then user didn't enter a language on that page
+                    //so we need to prompt them to fix it, then try again
+                    if (targetLang != foundTargetLang){
+                        chrome.runtime.sendMessage({action: 'handleInvalidTargetLangEntry'}, function(response){
+                            //do nothing here
+                        });
+                        return;
+                    }
+
+
+
                 } else {
                     targetLang = foundTargetLang;
                 }
