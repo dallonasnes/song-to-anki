@@ -70,18 +70,14 @@ class Lyrics():
         self.anki_deck_path = None
 
     def build_anki_deck(self):
-        try:
-            self.notes = []
-            for lyric, translation in self.lyrics.items():
-                cloze_sentence, translation = self.build_cloze_deletion_sentence(lyric, translation)
-                fields = [cloze_sentence, translation]
-                my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
-                self.notes.append(my_cloze_note)
+        self.notes = []
+        for lyric, translation in self.lyrics.items():
+            cloze_sentence, translation = self.build_cloze_deletion_sentence(lyric, translation)
+            fields = [cloze_sentence, translation]
+            my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
+            self.notes.append(my_cloze_note)
 
-            self.anki_deck = _build_deck(self.notes, self.song_name)
-        except Exception as ex:
-            import pdb; pdb.post_mortem()
-            raise ex
+        self.anki_deck = _build_deck(self.notes, self.song_name)
         
     def write_anki_deck_to_file(self):
         self.anki_deck_path = _wr_apkg(self.anki_deck, self.song_name)

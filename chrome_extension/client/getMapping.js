@@ -97,6 +97,9 @@ function sleep(ms) {
                             }
                         }
 
+                        //now have to cleanse the song name of any punctuation and extra spaces
+                        songname = songname.replace(/[.,\/#!$%\?^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ");
+
                         //save songname to local storage and send ping in callback
                         chrome.storage.local.set({songName: songname}, function(resp) {
                         //once that completes, send a runtime message to open next tab and send data

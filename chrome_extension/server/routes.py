@@ -26,7 +26,6 @@ def configure_routes(app):
             return response
 
         except Exception as ex:
-            print(ex)
             log_exception(ex)
             return json_failure({"exception": str(ex)})
 
