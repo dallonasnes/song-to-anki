@@ -93,8 +93,31 @@ function getMapping(){
                 }
 
                 //now pass a message to runtime with the mapped value
-                chrome.runtime.sendMessage({dataType: 'mapping', data: mapping}, function(response){
-                  //do nothing on response
+                chrome.storage.local.set({mapping: mapping}, function(resp) {
+                  console.log("got the mapping in local storage");
+                  console.log("now going to get the song name");
+                  let songName;
+                  songName = prompt("enter the song name");
+                  while (!songName){
+                    //do nothing
+                  }
+                  if (songName){
+                    //save it in local storage. then use the next callback
+                    chrome.storage.local.set({songName: songName}, function(resp) {
+                      let songLang;
+                      songLang = prompt("enter the song target lang");
+                      while (!songLang){
+                        //do nothing
+                      }
+                      if (songLang){
+                        //now we have all the data so can send the request
+                        console.log("now going to send the request");
+                      }
+                    });
+                  }
+                  else {
+                    alert("song name doesn't work!");
+                  }
                 });
 
             }
@@ -103,14 +126,13 @@ function getMapping(){
          allFrames: true
         }
     );
-      const link1 = "https://google.com";
-      chrome.tabs.create({ url: link1 , active: false}, function(tab) {
-        chrome.runtime.sendMessage({action: 'makeAnki'}, function(response){
-            chrome.tabs.remove(tab.id);
-        });
+    const link1 = "https://google.com";
+    chrome.tabs.create({ url: link1 , active: false}, function(tab) {
+      chrome.runtime.sendMessage({action: 'makeAnki'}, function(response){
+          chrome.tabs.remove(tab.id);
       });
+    });
 });
-  
 }
 
 function getSongLang(){

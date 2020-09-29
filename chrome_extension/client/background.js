@@ -49,52 +49,34 @@ function makeRequest(mapping, songName, songLang){
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
       if (request.action === "makeAnki"){
-        let mapping = {"hey": "hey there"}; 
-        let songName = "test";
-        let songLang = "english";
+        console.log("now sending from the background script");
+        let finalMap;
+        let finalSongName;
+        let finalSongLang;
 
-        /*chrome.storage.local.set({songLang: "english"}, function() {
-            console.log("got the song lang");
-        });
+        //use a while loop to block until we can get all the needed data from storage
+        while (!(finalMap && finalSongName && finalSongLang)){
+            if (!finalSongLang){
+                chrome.storage.local.get('songLang', function(data) {
+                    finalSongLang = data.songLang;
+                });
+            }
 
-        chrome.storage.local.set({songName: "test"}, function() {
-            console.log("got the song lang");
-        });
+            if (!finalSongName){
+                chrome.storage.local.get('songName', function(data) {
+                    finalSongName = data.songName;
+                });
+            }
+            
+            if (!finalMap){
+                chrome.storage.local.get('mapping', function(data) {
+                    finalMap = data.mapping;
+                });
+            }
+        }
 
-        
-        chrome.storage.local.get('songLang', function(data) {
-            songLang = data.songLang;
-        });
-
-        chrome.storage.local.get('songName', function(data) {
-            songName = data.songName;
-        });*/
-
-        chrome.storage.local.get('mapping', function(data) {
-            mapping = data.mapping;
-            console.log("sending request");
-            makeRequest(mapping, songName, songLang);
-        });
-
+        console.log("now have everything from the background script");
+        makeRequest(finalMap, finalSongName, finalSongLang);
+        sendResponse({close: true});
       }
-
-      else if (request.dataType === "mapping"){
-        chrome.storage.local.set({mapping: request.data}, function() {
-            console.log("got the mapping");
-            mapping = request.data;
-            console.log(mapping);
-        });
-      }
-      else if (request.dataType === "songName"){
-        chrome.storage.sync.set({songName: request.data}, function() {
-            console.log("got the song name");
-        });
-      }
-      else if (request.dataType === "songLang"){
-        chrome.storage.sync.set({songLang: request.data}, function() {
-            console.log("got the song lang");
-        });
-      }
-
-      sendResponse({close: true});
     });
