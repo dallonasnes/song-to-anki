@@ -70,3 +70,11 @@ Can't find any language named ''	***
 	***	
 *** Exception on 28/09/2020 20:51:48 	***
 	***	
+*** Exception on 28/09/2020 21:47:03 	***
+'یادمون' is not in list	***	
+*** Exception on 28/09/2020 21:51:24 	***
+module 'sys' has no attribute 'last_traceback'	***	
+*** Exception on 28/09/2020 21:57:48 	***
+'Lyrics' object has no attribute 'anki_deck'	***	
+*** Exception on 28/09/2020 21:57:48 	***
+'Lyrics' object has no attribute 'anki_deck'	***	

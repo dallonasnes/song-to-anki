@@ -41,7 +41,7 @@ function makeRequest(mapping, songName, songLang){
             }, function(e){
                 console.log(e);
             });
-        }).catch(err=>alert(err));
+        }).catch(err=>console.log(err));
 
 };
 
@@ -51,32 +51,11 @@ chrome.runtime.onMessage.addListener(
       if (request.action === "makeAnki"){
         console.log("now sending from the background script");
         let finalMap;
-        let finalSongName;
-        let finalSongLang;
-
-        //use a while loop to block until we can get all the needed data from storage
-        while (!(finalMap && finalSongName && finalSongLang)){
-            if (!finalSongLang){
-                chrome.storage.local.get('songLang', function(data) {
-                    finalSongLang = data.songLang;
-                });
-            }
-
-            if (!finalSongName){
-                chrome.storage.local.get('songName', function(data) {
-                    finalSongName = data.songName;
-                });
-            }
-            
-            if (!finalMap){
-                chrome.storage.local.get('mapping', function(data) {
-                    finalMap = data.mapping;
-                });
-            }
-        }
-
-        console.log("now have everything from the background script");
-        makeRequest(finalMap, finalSongName, finalSongLang);
-        sendResponse({close: true});
+        chrome.storage.local.get('mapping', function(data) {
+            finalMap = data.mapping;
+            console.log("now have everything from the background script");
+            makeRequest(finalMap, "test", "persian");
+            sendResponse({close: true});
+        });
       }
     });

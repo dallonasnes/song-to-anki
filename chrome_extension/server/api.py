@@ -70,14 +70,17 @@ class Lyrics():
         self.anki_deck_path = None
 
     def build_anki_deck(self):
-        self.notes = []
-        for lyric, translation in self.lyrics.items():
-            cloze_sentence, translation = self.build_cloze_deletion_sentence(lyric, translation)
-            fields = [cloze_sentence, translation]
-            my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
-            self.notes.append(my_cloze_note)
+        try:
+            self.notes = []
+            for lyric, translation in self.lyrics.items():
+                cloze_sentence, translation = self.build_cloze_deletion_sentence(lyric, translation)
+                fields = [cloze_sentence, translation]
+                my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
+                self.notes.append(my_cloze_note)
 
-        self.anki_deck = _build_deck(self.notes, self.song_name)
+            self.anki_deck = _build_deck(self.notes, self.song_name)
+        except:
+            import pdb; pdb.post_mortem()
         
     def write_anki_deck_to_file(self):
         self.anki_deck_path = _wr_apkg(self.anki_deck, self.song_name)
@@ -105,6 +108,7 @@ class Lyrics():
             rarest_word = pair[0]
             if rarest_word.lower() not in self.words_seen_in_this_deck:
                 count += 1
+                import pdb; pdb.set_trace()
                 idx = cloze_sentence.index(rarest_word)
                 #let's cut out all words in the first card only
                 cloze_word = "{{c1::" + rarest_word +"}}"

@@ -1,4 +1,4 @@
-let changeColor = document.getElementById('changeColor');
+let submit = document.getElementById('submit');
 
 function filterLine(x){
   return (100 * parseInt(x.split('-')[1])) + parseInt(x.split('-')[2]);
@@ -37,7 +37,7 @@ function buildMapping(){
         let songLyric = song_lyrics[songLyricIdx];
         let trLyric = tr_lyrics[trLyricIdx];
         //if no [ in the lyrics then proceed
-        if (!(songLyric.includes('[') || trLyric.includes('['))){
+        if (!(songLyric.includes('[') || trLyric.includes('[') || songLyric.includes('....') || trLyric.includes('....'))){
           mapping[songLyric] = trLyric;
         }
       }
@@ -92,32 +92,12 @@ function getMapping(){
                   }
                 }
 
-                //now pass a message to runtime with the mapped value
+                //now save the mapping in local storage
                 chrome.storage.local.set({mapping: mapping}, function(resp) {
-                  console.log("got the mapping in local storage");
-                  console.log("now going to get the song name");
-                  let songName;
-                  songName = prompt("enter the song name");
-                  while (!songName){
-                    //do nothing
-                  }
-                  if (songName){
-                    //save it in local storage. then use the next callback
-                    chrome.storage.local.set({songName: songName}, function(resp) {
-                      let songLang;
-                      songLang = prompt("enter the song target lang");
-                      while (!songLang){
-                        //do nothing
-                      }
-                      if (songLang){
-                        //now we have all the data so can send the request
-                        console.log("now going to send the request");
-                      }
+                    //once that completes, send a runtime message to open next tab and send data
+                    chrome.runtime.sendMessage({action: 'savedMapping'}, function(response){
+                      //do nothing here
                     });
-                  }
-                  else {
-                    alert("song name doesn't work!");
-                  }
                 });
 
             }
@@ -135,33 +115,31 @@ function getMapping(){
 });
 }
 
-function getSongLang(){
-  prompt("Enter the target language of the song");
-}
-
-chrome.storage.sync.get('color', function(data) {
-    changeColor.style.backgroundColor = data.color;
-    changeColor.setAttribute('value', data.color);
-});
-
-changeColor.onclick = function(element) {
+submit.onclick = function(element) {
     element.preventDefault();
-    let color = element.target.value;
+
+    //get the song input lang and save it to local storage
 
     //each of the three below methods passes data to the background script
     getMapping();
     //getSongName();
     //getSongLang();
-    
-    //send post request to server from new tab to avoid cors error
-    /*const link1 = "https://google.com";
-    chrome.tabs.create({ url: link1 , active: false}, function(tab) {
-        chrome.runtime.sendMessage({action: 'makeAnki'}, function(response){
-            chrome.tabs.remove(tab.id);
-        });
-      });*/
-
 };
+
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse){
+      if (request.action === "savedMapping"){
+        chrome.tabs.create({ url: "https://google.com" , active: false}, function(tab) {
+          chrome.runtime.sendMessage({action: 'makeAnki'}, function(response){
+              chrome.tabs.remove(tab.id);
+              //i think sendResponse refers to highest level function here
+              sendResponse({close: true});
+          });
+        });
+      }
+  }
+)
+
 /*
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
