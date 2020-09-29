@@ -135,10 +135,11 @@ class SongLyric():
     def populate_metadata(self):
         self.driver.get(self.url)
         sleep(1)
-        import pdb; pdb.set_trace()
         try:
             self.song_name = self.driver.find_element_by_class_name("song-node-info-album").find_element_by_tag_name("a").text
         except:
+            #can try to get song name from url bar instead
+            import pdb; pdb.set_trace()
             self.song_name = "mySongName"
         try:
             self.found_base_lang = self.driver.find_elements_by_class_name("langsmall-song")[0].text.lower().split('\n')[0].strip().split(' ')[0].lower().strip().split('/')[0]

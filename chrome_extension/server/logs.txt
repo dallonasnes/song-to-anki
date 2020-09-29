@@ -78,3 +78,15 @@ module 'sys' has no attribute 'last_traceback'	***
 'Lyrics' object has no attribute 'anki_deck'	***	
 *** Exception on 28/09/2020 21:57:48 	***
 'Lyrics' object has no attribute 'anki_deck'	***	
+*** Exception on 28/09/2020 23:16:26 	***
+'Lyrics' object has no attribute 'anki_deck'	***	
+*** Exception on 28/09/2020 23:17:17 	***
+'Lyrics' object has no attribute 'anki_deck'	***	
+*** Exception on 28/09/2020 23:20:19 	***
+'Lyrics' object has no attribute 'anki_deck'	***	
+*** Exception on 28/09/2020 23:53:53 	***
+'Lyrics' object has no attribute 'anki_deck'	***	
+*** Exception on 28/09/2020 23:56:24 	***
+'Lyrics' object has no attribute 'anki_deck'	***	
+*** Exception on 28/09/2020 23:58:00 	***
+'Lyrics' object has no attribute 'anki_deck'	***	

@@ -1,7 +1,4 @@
 chrome.runtime.onInstalled.addListener(function (){
-    chrome.storage.sync.set({color: '#3aa757'}, function() {
-        console.log("The color is green.");
-    });
     chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
         chrome.declarativeContent.onPageChanged.addRules([{
             conditions: [new chrome.declarativeContent.PageStateMatcher({
@@ -15,7 +12,7 @@ chrome.runtime.onInstalled.addListener(function (){
 
 function makeRequest(mapping, songName, songLang){
     const baseUrl = "http://localhost:8000/lyrics-to-anki";
-
+    console.log("just made the request");
     const data = {
         song_name: songName,
         song_lang: songLang,
@@ -49,13 +46,26 @@ function makeRequest(mapping, songName, songLang){
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
       if (request.action === "makeAnki"){
-        console.log("now sending from the background script");
         let finalMap;
+        let songName;
+        let songLang;
+        //first get the mapping
+        //on callback, then get the song name
+        //on last callback, get song target lang and send request to server
         chrome.storage.local.get('mapping', function(data) {
+            console.log("just got the mapping");
             finalMap = data.mapping;
-            console.log("now have everything from the background script");
-            makeRequest(finalMap, "test", "persian");
-            sendResponse({close: true});
+            chrome.storage.local.get('songName', function(data) {
+                console.log("just got the song name");
+                songName = data.songName;
+                chrome.storage.local.get('songLang', function(data){
+                    console.log('just got the song lang');
+                    songLang = data.songLang;
+                    makeRequest(finalMap, songName, "persian");
+                });
+            });
         });
       }
+
+      sendResponse({close: true});
     });

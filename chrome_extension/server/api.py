@@ -108,7 +108,6 @@ class Lyrics():
             rarest_word = pair[0]
             if rarest_word.lower() not in self.words_seen_in_this_deck:
                 count += 1
-                import pdb; pdb.set_trace()
                 idx = cloze_sentence.index(rarest_word)
                 #let's cut out all words in the first card only
                 cloze_word = "{{c1::" + rarest_word +"}}"
