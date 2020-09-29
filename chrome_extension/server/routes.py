@@ -12,6 +12,7 @@ def configure_routes(app):
     @app.route("/lyrics-to-anki", methods=['PUT'])
     def song_req():
         try:
+            import pdb; pdb.set_trace()
             obj = request.get_json()
             lyrics = obj['lyrics']
             song_name = obj['song_name']
@@ -21,6 +22,7 @@ def configure_routes(app):
             lyrics.build_anki_deck()
             lyrics.write_anki_deck_to_file()
 
+            #import pdb; pdb.set_trace()
             response = send_from_directory(directory='.', filename=lyrics.anki_deck_path)
             lyrics.cleanup()
             return response

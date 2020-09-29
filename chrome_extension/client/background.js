@@ -13,44 +13,13 @@ chrome.runtime.onInstalled.addListener(function (){
     });
 });
 
-function getLyrics(){
-    return {"line 1": "line 11"};
-};
-
-function base64ToArrayBuffer(base64) {
-    var binaryString = window.atob(base64);
-    var binaryLen = binaryString.length;
-    var bytes = new Uint8Array(binaryLen);
-    for (var i = 0; i < binaryLen; i++) {
-       var ascii = binaryString.charCodeAt(i);
-       bytes[i] = ascii;
-    }
-    return bytes;
- }
-
- var saveByteArray = (function () {
-    var a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style = "display: none";
-    return function (data, name) {
-        
-        a.href = url;
-        a.download = name;
-        a.click();
-        window.URL.revokeObjectURL(url);
-    };
-}());
-
-function makeRequest(){
+function makeRequest(mapping, songName, songLang){
     const baseUrl = "http://localhost:8000/lyrics-to-anki";
-    //would build lyrics here to pass in request
-    const song_name = "test";
-    const song_lang = "english";
 
     const data = {
-        song_name: song_name,
-        song_lang: song_lang,
-        lyrics: getLyrics()
+        song_name: songName,
+        song_lang: songLang,
+        lyrics: mapping
     }
 
     const options = {
@@ -62,58 +31,70 @@ function makeRequest(){
     };
 
     fetch(baseUrl, options)
-        .then(res=>{
+        .then(res=> {
             return res.blob();
         }).then(blob=>{
-            /*chrome.runtime.sendMessage({data: blob}, function(response){
-                console.log("finished");
-            });*/
-            //var data = new Int8Array(blob.length);
-            //var toDown = new Blob([blob], {type: "octet/stream"});
-            var url = URL.createObjectURL(blob);
-            alert(url);
             chrome.downloads.download({
-                url: url, // The object URL can be used as download URL
-                filename: "asdftest.apkg"
+                url: URL.createObjectURL(blob),
+                filename: songName + ".apkg"
                 //...
             }, function(e){
-                alert(e);
+                console.log(e);
             });
-            //URL.revokeObjectURL(url);
-            //download(blob, "myTest.apkg", "application/apkg")
         }).catch(err=>alert(err));
 
-    /*const req = new XMLHttpRequest();
-    const baseUrl = "http://localhost:8000/lyrics-to-anki";
-    //would build lyrics here to pass in request
-    const song_name = "test";
-    const song_lang = "english";
+};
 
-    var data = {};
-    data.song_name = song_name;
-    data.song_lang = song_lang;
-    data.lyrics = getLyrics();
-
-    req.open("PUT", baseUrl, true);
-    req.setRequestHeader("Content-type", "application/json; charset=utf-8");
-
-    req.onload = function() {
-        alert(req.response);
-        console.log(req)
-        chrome.runtime.sendMessage({data: req.response}, function(response){
-            console.log("finished");
-        });
-        //Here need to use download library to download anki deck response on client
-    }
-    req.send(JSON.stringify(data));*/
-}
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
       if (request.action === "makeAnki"){
-        makeRequest();
+        let mapping = {"hey": "hey there"}; 
+        let songName = "test";
+        let songLang = "english";
+
+        /*chrome.storage.local.set({songLang: "english"}, function() {
+            console.log("got the song lang");
+        });
+
+        chrome.storage.local.set({songName: "test"}, function() {
+            console.log("got the song lang");
+        });
+
+        
+        chrome.storage.local.get('songLang', function(data) {
+            songLang = data.songLang;
+        });
+
+        chrome.storage.local.get('songName', function(data) {
+            songName = data.songName;
+        });*/
+
+        chrome.storage.local.get('mapping', function(data) {
+            mapping = data.mapping;
+            console.log("sending request");
+            makeRequest(mapping, songName, songLang);
+        });
+
       }
-      
-      
+
+      else if (request.dataType === "mapping"){
+        chrome.storage.local.set({mapping: request.data}, function() {
+            console.log("got the mapping");
+            mapping = request.data;
+            console.log(mapping);
+        });
+      }
+      else if (request.dataType === "songName"){
+        chrome.storage.sync.set({songName: request.data}, function() {
+            console.log("got the song name");
+        });
+      }
+      else if (request.dataType === "songLang"){
+        chrome.storage.sync.set({songLang: request.data}, function() {
+            console.log("got the song lang");
+        });
+      }
+
       sendResponse({close: true});
     });

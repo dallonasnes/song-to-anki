@@ -10,3 +10,61 @@
 [Errno 2] No such file or directory: 'decks/test.apkg'	***	
 *** Exception on 26/09/2020 20:30:33 	***
 	***	
+*** Exception on 28/09/2020 18:10:55 	***
+404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.	***	
+*** Exception on 28/09/2020 19:23:35 	***
+'lyrics'	***	
+*** Exception on 28/09/2020 19:24:56 	***
+'lyrics'	***	
+*** Exception on 28/09/2020 19:26:57 	***
+	***	
+*** Exception on 28/09/2020 19:28:13 	***
+	***	
+*** Exception on 28/09/2020 19:32:58 	***
+	***	
+*** Exception on 28/09/2020 19:45:37 	***
+'lyrics'	***	
+*** Exception on 28/09/2020 19:46:21 	***
+	***	
+*** Exception on 28/09/2020 19:46:41 	***
+	***	
+*** Exception on 28/09/2020 19:48:36 	***
+	***	
+*** Exception on 28/09/2020 19:51:36 	***
+'lyrics'	***	
+*** Exception on 28/09/2020 19:52:05 	***
+	***	
+*** Exception on 28/09/2020 19:52:43 	***
+	***	
+*** Exception on 28/09/2020 19:56:02 	***
+	***	
+*** Exception on 28/09/2020 19:57:15 	***
+	***	
+*** Exception on 28/09/2020 19:57:59 	***
+	***	
+*** Exception on 28/09/2020 19:58:55 	***
+	***	
+*** Exception on 28/09/2020 19:59:21 	***
+	***	
+*** Exception on 28/09/2020 20:00:10 	***
+	***	
+*** Exception on 28/09/2020 20:00:41 	***
+	***	
+*** Exception on 28/09/2020 20:10:24 	***
+	***	
+*** Exception on 28/09/2020 20:20:19 	***
+Can't find any language named ''	***	
+*** Exception on 28/09/2020 20:20:30 	***
+Can't find any language named ''	***	
+*** Exception on 28/09/2020 20:29:44 	***
+	***	
+*** Exception on 28/09/2020 20:32:59 	***
+	***	
+*** Exception on 28/09/2020 20:41:09 	***
+	***	
+*** Exception on 28/09/2020 20:44:37 	***
+	***	
+*** Exception on 28/09/2020 20:46:10 	***
+	***	
+*** Exception on 28/09/2020 20:47:00 	***
+	***	
