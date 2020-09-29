@@ -110,6 +110,8 @@ function sleep(ms) {
                     });
                 });
             });
+        } else {
+            //need to log url that was unable to process this request
         }
     }
 })();
