@@ -79,8 +79,9 @@ class Lyrics():
                 self.notes.append(my_cloze_note)
 
             self.anki_deck = _build_deck(self.notes, self.song_name)
-        except:
+        except Exception as ex:
             import pdb; pdb.post_mortem()
+            raise ex
         
     def write_anki_deck_to_file(self):
         self.anki_deck_path = _wr_apkg(self.anki_deck, self.song_name)
@@ -99,7 +100,7 @@ class Lyrics():
             translation_tokens[-1] = last_word
 
         #sort words from least frequent to most frequent based on freq score
-        word_freq_scores = sorted([(word, zipf_frequency(word, self.lang_code)) for word in cloze_sentence], key=lambda x: x[1])
+        word_freq_scores = sorted([(word, zipf_frequency(word.lower(), self.lang_code)) for word in cloze_sentence], key=lambda x: x[1])
         assert len(word_freq_scores) == len(cloze_sentence)
         #make cloze out of first least-frequent word that isn't already in my vocabulary
         #get two rarest words for cloze

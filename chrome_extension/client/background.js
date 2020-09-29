@@ -29,7 +29,11 @@ function makeRequest(mapping, songName, songLang){
 
     fetch(baseUrl, options)
         .then(res=> {
-            return res.blob();
+            if (res.status == 200){
+                return res.blob();
+            } else {
+                throw Error("Response has incorrect status code of : " + res.status + " with status text: " + res.statusText);
+            }
         }).then(blob=>{
             chrome.downloads.download({
                 url: URL.createObjectURL(blob),
@@ -53,15 +57,12 @@ chrome.runtime.onMessage.addListener(
         //on callback, then get the song name
         //on last callback, get song target lang and send request to server
         chrome.storage.local.get('mapping', function(data) {
-            console.log("just got the mapping");
             finalMap = data.mapping;
             chrome.storage.local.get('songName', function(data) {
-                console.log("just got the song name");
                 songName = data.songName;
                 chrome.storage.local.get('songLang', function(data){
-                    console.log('just got the song lang');
                     songLang = data.songLang;
-                    makeRequest(finalMap, songName, "persian");
+                    makeRequest(finalMap, songName, songLang);
                 });
             });
         });

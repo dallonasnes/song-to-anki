@@ -90,3 +90,19 @@ module 'sys' has no attribute 'last_traceback'	***
 'Lyrics' object has no attribute 'anki_deck'	***	
 *** Exception on 28/09/2020 23:58:00 	***
 'Lyrics' object has no attribute 'anki_deck'	***	
+*** Exception on 29/09/2020 00:02:23 	***
+'Et' is not in list	***	
+*** Exception on 29/09/2020 00:10:42 	***
+	***	
+*** Exception on 29/09/2020 00:11:26 	***
+Can't find any language named ''	***	
+*** Exception on 29/09/2020 00:12:24 	***
+Can't find any language named ''	***	
+*** Exception on 29/09/2020 00:13:31 	***
+Can't find any language named ''	***	
+*** Exception on 29/09/2020 00:14:19 	***
+Can't find any language named ''	***	
+*** Exception on 29/09/2020 00:18:45 	***
+'frère?' is not in list	***	
+*** Exception on 29/09/2020 00:24:16 	***
+'frère?' is not in list	***	
