@@ -43,7 +43,6 @@ function makeRequest(mapping, songName, songLang){
                 console.log(e);
             });
         }).catch(err=>console.log(err));
-
 };
 
 

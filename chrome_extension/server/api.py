@@ -117,12 +117,12 @@ class Lyrics():
                 if count >= CLOZE_LIMIT:
                     break
             
-            #if we didn't add any new words because all were seen, just make one cloze of rarest word
-            if count == 0:
-                rarest_word = word_freq_scores[0][0]
-                idx = cloze_sentence.index(rarest_word)
-                cloze_word = "{{c1::" + rarest_word +"}}"
-                cloze_sentence[idx] = cloze_word
+        #if we didn't add any new words because all were seen, just make one cloze of rarest word
+        if count == 0:
+            rarest_word = word_freq_scores[0][0]
+            idx = cloze_sentence.index(rarest_word)
+            cloze_word = "{{c1::" + rarest_word +"}}"
+            cloze_sentence[idx] = cloze_word
 
         return ' '.join(cloze_sentence), ' '.join(translation_tokens)
     

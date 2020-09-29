@@ -6,7 +6,7 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-async function routine(){
+(async function routine(){
     let lyrics = document.getElementsByClassName("ltf");
     if (lyrics && lyrics[0]){
         if (lyrics.length < 2){
@@ -109,6 +109,4 @@ async function routine(){
             });
         }
     }
-};
-
-routine();
+})();
