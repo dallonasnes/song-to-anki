@@ -48,7 +48,7 @@ function sleep(ms) {
                 }
 
                 //if the target lang is different, then we flip
-                if (targetLang && targetLang != foundTargetLang){
+                if (targetLang && !(targetLang.includes(foundTargetLang) || foundTargetLang.includes(targetLang))){
                     let temp = ya;
                     ya = xa;
                     xa = temp;
@@ -60,7 +60,7 @@ function sleep(ms) {
 
                     //if still not equal, then user didn't enter a language on that page
                     //so we need to prompt them to fix it, then try again
-                    if (targetLang != foundTargetLang){
+                    if (!(targetLang.includes(foundTargetLang) || foundTargetLang.includes(targetLang))){
                         chrome.runtime.sendMessage({action: 'handleInvalidTargetLangEntry'}, function(response){
                             //do nothing here
                         });
