@@ -22,19 +22,16 @@ def configure_routes(app):
 
             lyrics = Lyrics(lyrics, song_name, song_lang)
             lyrics.build_anki_deck()
-            lyrics.write_anki_deck_to_file()
+            lyrics.build_anki_pkg()
 
-            response = send_file(
+            return send_file(
                             lyrics.pkg,
                             mimetype='application/apkg',
                             as_attachment=True,
                             attachment_filename=lyrics.song_name + ".apkg")
 
-            lyrics.cleanup()
-            return response
-
         except Exception as ex:
-            contentMsg = get_error_content_message(request, ex)
+            contentMsg = build_error_content_message(request, ex)
             subjectMsg = "server side exception"
             send_email(subjectMsg, contentMsg)
             log_server_exception(ex)
@@ -50,14 +47,14 @@ def configure_routes(app):
             log_client_exception(errorContext)
 
             if sendAlertIndicator:
-                contentMsg = get_error_content_message(request, errorContext)
+                contentMsg = build_error_content_message(request, errorContext)
                 subjectMsg = "client side exception"
                 send_email(subjectMsg, contentMsg)
             
             return json_success({"emailSent": sendAlertIndicator})
 
         except Exception as ex:
-            contentMsg = get_error_content_message(request, ex)
+            contentMsg = build_error_content_message(request, ex)
             subjectMsg = "server side exception while logging exception from client"
             send_email(subjectMsg, contentMsg)
             log_server_exception(ex)
@@ -100,5 +97,5 @@ def log_client_exception(exc):
         file.write(exc)
         file.write(end_line)
 
-def get_error_content_message(req, ex):
+def build_error_content_message(req, ex):
     return "Input object is:\n {} \nand exception is\n {}".format(str(req.get_json()), str(ex))

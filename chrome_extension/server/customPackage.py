@@ -5,7 +5,6 @@ import sqlite3
 import tempfile
 import time
 import zipfile
-import gzip
 
 from custom_apkg_col import APKG_COL
 from custom_apkg_schema import APKG_SCHEMA
@@ -20,7 +19,7 @@ class Package:
 
     self.media_files = media_files or []
 
-  def write_to_file(self, file):
+  def write_to_file(self):
     dbfile, dbfilename = tempfile.mkstemp()
     os.close(dbfile)
 
