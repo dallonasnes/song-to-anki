@@ -10,7 +10,7 @@ chrome.runtime.onInstalled.addListener(function (){
     });
 });
 
-const HOST = "https://dallon.pythonanywhere.com/";
+const HOST = "https://song-to-anki.herokuapp.com/";
 //const HOST = "http://localhost:8000/"
 
 function logErrorAtServer(err, alertIndicator){
