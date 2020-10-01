@@ -1,3 +1,4 @@
+#copied from: https://github.com/kerrickstaley/genanki/blob/master/genanki/apkg_col.py
 APKG_COL = r'''
 INSERT INTO col VALUES(
     null,

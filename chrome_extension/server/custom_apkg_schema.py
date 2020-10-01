@@ -1,3 +1,4 @@
+#copied from: https://github.com/kerrickstaley/genanki/blob/master/genanki/apkg_schema.py
 APKG_SCHEMA = '''
 CREATE TABLE col (
     id              integer primary key,
