@@ -6,9 +6,9 @@ import tempfile
 import time
 import zipfile
 
+from genanki import Deck
 from custom_apkg_col import APKG_COL
 from custom_apkg_schema import APKG_SCHEMA
-from genanki import Deck
 
 class Package:
   def __init__(self, deck_or_decks=None, media_files=None):
@@ -19,7 +19,7 @@ class Package:
 
     self.media_files = media_files or []
 
-  def write_to_file(self):
+  def get_bytes(self):
     dbfile, dbfilename = tempfile.mkstemp()
     os.close(dbfile)
 
@@ -32,8 +32,6 @@ class Package:
     conn.commit()
     conn.close()
 
-
-    #TODO: store and return this object instead of writing it to disk
     f = io.BytesIO()
     with zipfile.ZipFile(f, 'w') as outzip:
         outzip.write(dbfilename, 'collection.anki2')
@@ -44,6 +42,7 @@ class Package:
 
         for idx, path in media_file_idx_to_path.items():
             outzip.write(path, str(idx))
+
     f.seek(0)
     return f
 
@@ -72,5 +71,5 @@ class Package:
     from anki.importing.apkg import AnkiPackageImporter
 
     tmpfilename = tempfile.NamedTemporaryFile(delete=False).name
-    self.write_to_file(tmpfilename)
+    self.get_bytes(tmpfilename)
     AnkiPackageImporter(mw.col, tmpfilename).run()

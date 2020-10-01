@@ -52,7 +52,7 @@ class Lyrics():
         self.lyrics = lyrics
         self.song_name = song_name
         self.song_lang = song_lang.lower()
-        self.lang_code = _get_lang_code(self.song_lang)
+        self.lang_code = langcodes.find(self.song_lang).language
         self.words_seen_in_this_deck = set()
         self.pkg = None
 
@@ -67,7 +67,7 @@ class Lyrics():
         self.anki_deck = _build_deck(self.notes, self.song_name)
         
     def build_anki_pkg(self):
-        self.pkg = Package(self.anki_deck).write_to_file()
+        self.pkg = Package(self.anki_deck).get_bytes()
     
     def build_cloze_deletion_sentence(self, lyric, translation):
         #cleanse of stop words and cloze words/phrases that aren't in my vocabulary (database? restAPI?)
@@ -113,10 +113,6 @@ class Lyrics():
 ##############################
 ## Helper Methods
 ##############################
-        
-def _get_lang_code(lang):
-    return langcodes.find(lang).language
-
 def _build_deck(notes, deckname):
     """Builds anki deck out of notes. Returns anki deck object"""
     deck = Deck(deck_id=23, name=deckname)

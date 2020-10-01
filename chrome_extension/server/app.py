@@ -14,3 +14,6 @@ if __name__ == "__main__":
 #TODO
 #Need to validate incoming lyrics json obj to make sure nothing malicious
 #Can do this with JWT - have client sent token to verify that my client-side code constructed the object
+
+#Need to handle songs in multiple languages...eg danza kuduro is both portuguese and spanish
+#Optionally add romanization to non-roman scripts
