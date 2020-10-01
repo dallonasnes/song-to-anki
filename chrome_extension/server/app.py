@@ -17,3 +17,4 @@ if __name__ == "__main__":
 
 #Need to handle songs in multiple languages...eg danza kuduro is both portuguese and spanish
 #Optionally add romanization to non-roman scripts
+#Also add options page to contact me with bugs?
