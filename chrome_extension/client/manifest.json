@@ -1,7 +1,7 @@
 {
     "name": "Song To Anki",
     "version": "1.0",
-    "description": "Find your favorite foreign-language song on lyricstranslate.com and generate an Anki space-repetition flashcard set to learn all the words!",
+    "description": "Find your favorite (foreign) song on lyricstranslate.com and generate an Anki space-repetition flashcard set to learn all the words!",
     "permissions": ["tabs", "activeTab", "declarativeContent", "storage", "<all_urls>", "downloads"],
     "background": {
         "scripts": ["background.js"],

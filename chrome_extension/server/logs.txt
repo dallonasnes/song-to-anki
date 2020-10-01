@@ -112,3 +112,37 @@ Can't find any language named ''	***
 'errorContext'	***	
 *** Exception on 29/09/2020 11:50:26 	***
 'errorContext'	***	
+*** Exception on 30/09/2020 20:33:57 	***
+	***	
+*** Exception on 30/09/2020 20:42:14 	***
+name 'self' is not defined	***	
+*** Exception on 30/09/2020 20:43:26 	***
+name 'self' is not defined	***	
+*** Exception on 30/09/2020 20:46:30 	***
+name 'self' is not defined	***	
+*** Exception on 30/09/2020 20:47:10 	***
+name 'self' is not defined	***	
+*** Exception on 30/09/2020 20:50:19 	***
+name 'self' is not defined	***	
+*** Exception on 30/09/2020 20:51:29 	***
+name 'self' is not defined	***	
+*** Exception on 30/09/2020 20:54:16 	***
+Object of type Package is not JSON serializable	***	
+*** Exception on 30/09/2020 20:55:22 	***
+a bytes-like object is required, not 'Package'	***	
+*** Exception on 30/09/2020 20:59:44 	***
+Object of type Package is not JSON serializable	***	
+*** Exception on 30/09/2020 21:35:31 	***
+'Request' object has no attribute 'Response'	***	
+*** Exception on 30/09/2020 21:36:10 	***
+__init__() got an unexpected keyword argument 'content_type'	***	
+*** Exception on 30/09/2020 21:36:36 	***
+__init__() takes 1 positional argument but 2 were given	***	
+*** Exception on 30/09/2020 21:41:07 	***
+The view function did not return a valid response. The return type must be a string, dict, tuple, Response instance, or WSGI callable, but it was a BytesIO.	***	
+*** Exception on 30/09/2020 21:45:30 	***
+ZipFile requires mode 'r', 'w', 'x', or 'a'	***	
+*** Exception on 30/09/2020 21:47:38 	***
+write() takes 2 positional arguments but 3 were given	***	
+*** Exception on 30/09/2020 21:48:12 	***
+memoryview: a bytes-like object is required, not 'str'	***	

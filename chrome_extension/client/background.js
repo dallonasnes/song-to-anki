@@ -10,7 +10,8 @@ chrome.runtime.onInstalled.addListener(function (){
     });
 });
 
-const HOST = "http://localhost:8000/";
+const HOST = "https://dallon.pythonanywhere.com/";
+//const HOST = "http://localhost:8000/"
 
 function logErrorAtServer(err, alertIndicator){
     const baseUrl = HOST + "log-client-error";
@@ -57,17 +58,19 @@ function makeRequest(mapping, songName, songLang, pageUrl){
     fetch(baseUrl, options)
         .then(res=> {
             if (res.status == 200){
-                return res.blob();
+                return res.blob()
             } else {
                 throw Error("Server response to process lyrics from pageUrl: " + pageUrl + " has incorrect status code of : " + res.status + " with status text: " + res.statusText);
             }
         }).then(blob=>{
+            let blobUrl = URL.createObjectURL(blob)
             chrome.downloads.download({
-                url: URL.createObjectURL(blob),
+                url: blobUrl,
                 filename: songName + ".apkg"
                 //...
             }, function(e){
-                //don't need to do anything here
+                URL.revokeObjectURL(blobUrl)
+                //TODO: should I revoke the object URL here? 
             });
         }).catch(err=>logErrorAtServer(err.toString(), true));
 };

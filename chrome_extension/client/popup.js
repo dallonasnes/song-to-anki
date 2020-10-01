@@ -29,8 +29,13 @@ function getMapping(){
 }
 
 function handleInvalidTargetLangEntry(){
-    alert("The langauge you're learning isn't on this page. Please go to the right page and try again.")
+    alert("Hmm... it looks like the langauge you're learning isn't on this page. Please go to the right page and try again.")
     window.close();
+}
+
+function handleOnlyOneLangColumnDisplayed(){
+  alert("Hmm... it looks like this page is only showing one language. Please select a translation language below, then try again");
+  window.close();
 }
 
 submit.onclick = function(element) {
@@ -56,6 +61,9 @@ chrome.runtime.onMessage.addListener(
       }
       else if (request.action === "handleInvalidTargetLangEntry"){
         handleInvalidTargetLangEntry();
+      }
+      else if (request.action === "handleOnlyOneLangColumnDisplayed"){
+        handleOnlyOneLangColumnDisplayed();
       }
       else if (request.action === "readyWithError"){
         chrome.tabs.create({ url: "https://google.com" , active: false}, function(tab) {

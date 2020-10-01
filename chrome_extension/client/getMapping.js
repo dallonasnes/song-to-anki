@@ -67,8 +67,6 @@ function sleep(ms) {
                         return;
                     }
 
-
-
                 } else {
                     targetLang = foundTargetLang;
                 }
@@ -81,8 +79,8 @@ function sleep(ms) {
                     let song_ids = xa.map(a => a.getAttribute("class"));
                     let tr_ids = ya.map(a => a.getAttribute("class"));
                 
-                    if (song_lyrics.length != song_ids.length) alert("something's broken, dallon take a look");
-                    if (tr_lyrics.length != tr_ids.length) alert("something's broken, dallon take a look");
+                    //if (song_lyrics.length != song_ids.length) alert("something's broken, dallon take a look");
+                    //if (tr_lyrics.length != tr_ids.length) alert("something's broken, dallon take a look");
                 
                     let filtered_song_ids = song_ids.filter(a => a.includes("ll"));
                     let filtered_tr_ids = tr_ids.filter(a => a.includes("ll"));
@@ -145,8 +143,11 @@ function sleep(ms) {
                 });
             });
         } else {
-            //need to log url that was unable to process this request
-            sendLogMessage(new Error("Unable to parse both sets of lyrics from webpage " + window.location.href), true);
+            /* This state is most likely to occur when icon is clicked on song-info page instead of song-translation page*/
+            chrome.runtime.sendMessage({action: 'handleOnlyOneLangColumnDisplayed'}, function(response){
+                //do nothing here
+            });
+            return;
         }
     }
 })();
