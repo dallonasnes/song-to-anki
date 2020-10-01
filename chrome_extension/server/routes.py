@@ -1,10 +1,8 @@
 from datetime import datetime
-from flask import Flask, jsonify, request, send_from_directory, send_file, make_response
+from flask import jsonify, request, send_from_directory, send_file
 import json
 from api import Lyrics
 from sendgridAPI import send_email
-from io import BytesIO
-import requests
 
 LYRICS_TRANSLATE = 'lyricstranslate.com'
 
