@@ -9,14 +9,15 @@ app = Flask(__name__)
 configure_routes(app)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+    app.run(debug=False)
 
 #TODO
-#1. submit PR to genanki project so that I can use that repo directly instead of my custom classes
 #2. sync server-only proj back up with improvements to this api
 #3. delete log files periodically on pythonanywhere to save memory?
 #4. write options telling that pages that have the yellow tracking work best
 #5. to minify and combine js content just for fun?
+#6. Make everything a get instead of put request because free tier has higher limit for get requests
+#7. do this: https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway
 
 #Need to validate incoming lyrics json obj to make sure nothing malicious
 #Can do this with JWT - have client sent token to verify that my client-side code constructed the object
