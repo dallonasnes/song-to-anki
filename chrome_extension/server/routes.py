@@ -79,10 +79,13 @@ def log_server_exception(exc):
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     metadata_line = "*** Exception on " + dt_string + " \t***\n"
     end_line = "\t***\t\n"
-    with (open("logs.txt", "a+")) as file:
-        file.write(metadata_line)
-        file.write(exc)
-        file.write(end_line)
+    #with (open("logs.txt", "a+")) as file:
+    #    file.write(metadata_line)
+    #    file.write(exc)
+    #    file.write(end_line)
+    print(metadata_line)
+    print(exc)
+    print(end_line)
     
 def log_client_exception(exc):
     exc = str(exc)
@@ -90,10 +93,13 @@ def log_client_exception(exc):
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     metadata_line = "*** Exception on " + dt_string + " \t***\n"
     end_line = "\t***\t\n"
-    with (open("clientlogs.txt", "a+")) as file:
-        file.write(metadata_line)
-        file.write(exc)
-        file.write(end_line)
+    #with (open("clientlogs.txt", "a+")) as file:
+    #    file.write(metadata_line)
+    #    file.write(exc)
+    #    file.write(end_line)
+    print(metadata_line)
+    print(exc)
+    print(end_line)
 
 def build_error_content_message(req, ex):
     return "Input object is:\n {} \nand exception is\n {}".format(str(req.get_json()), str(ex))
