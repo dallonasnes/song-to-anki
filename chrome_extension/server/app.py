@@ -14,6 +14,7 @@ if __name__ == "__main__":
 #TODO
 #1. submit PR to genanki project so that I can use that repo directly instead of my custom classes
 #2. sync server-only proj back up with improvements to this api
+#3. delete log files periodically on pythonanywhere to save memory?
 
 #Need to validate incoming lyrics json obj to make sure nothing malicious
 #Can do this with JWT - have client sent token to verify that my client-side code constructed the object
