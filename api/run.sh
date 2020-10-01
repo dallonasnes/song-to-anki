@@ -1,1 +1,0 @@
-docker run --rm -it -p 8000:8000 -v $(pwd)/src:/usr/src/app/ song_to_anki
