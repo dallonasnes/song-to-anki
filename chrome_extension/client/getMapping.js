@@ -19,7 +19,7 @@ function sleep(ms) {
         if (lyrics.length < 2){
             //have to try to get the lyrics again, after clicking on the "show original lyrics" button
             try {
-                document.getElementsByClassName("dottedlink")[0].click();
+                document.getElementsByClassName("dottedlink")[1].click();
             } catch (error){
                 //console.log(error);
             }
