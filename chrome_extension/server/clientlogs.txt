@@ -40,3 +40,35 @@ Error: Unable to parse songname from url https://lyricstranslate.com/en/divar-wa
 526	***	
 *** Exception on 29/09/2020 12:14:19 	***
 Error: Unable to parse songname from url https://lyricstranslate.com/en/divar-wall.html-0	***	
+*** Exception on 30/09/2020 20:42:14 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 20:43:26 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 20:46:30 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 20:47:10 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 20:50:19 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 20:51:29 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 20:54:16 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 20:55:22 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 20:59:44 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 21:35:31 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 21:36:10 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 21:36:36 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 21:41:07 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 21:45:30 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 21:47:38 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	
+*** Exception on 30/09/2020 21:48:12 	***
+Error: Server response to process lyrics from pageUrl: https://lyricstranslate.com/en/mood-humor.html has incorrect status code of : 400 with status text: BAD REQUEST	***	

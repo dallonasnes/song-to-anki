@@ -1,8 +1,10 @@
 from datetime import datetime
-from flask import jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, send_file, make_response
 import json
 from api import Lyrics
 from sendgridAPI import send_email
+from io import BytesIO
+import requests
 
 LYRICS_TRANSLATE = 'lyricstranslate.com'
 
@@ -22,7 +24,12 @@ def configure_routes(app):
             lyrics.build_anki_deck()
             lyrics.write_anki_deck_to_file()
 
-            response = send_from_directory(directory='.', filename=lyrics.anki_deck_path)
+            response = send_file(
+                            lyrics.pkg,
+                            mimetype='application/apkg',
+                            as_attachment=True,
+                            attachment_filename=lyrics.song_name + ".apkg")
+
             lyrics.cleanup()
             return response
 

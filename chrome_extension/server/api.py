@@ -7,7 +7,8 @@ import uuid
 from genanki import Model
 from genanki import Note
 from genanki import Deck
-from genanki import Package
+from customPackage import Package
+#from genanki import Package
 
 from time import sleep
 import random
@@ -68,6 +69,7 @@ class Lyrics():
         self.lang_code = _get_lang_code(self.song_lang)
         self.words_seen_in_this_deck = set()
         self.anki_deck_path = None
+        self.pkg = None
 
     def build_anki_deck(self):
         self.notes = []
@@ -80,7 +82,7 @@ class Lyrics():
         self.anki_deck = _build_deck(self.notes, self.song_name)
         
     def write_anki_deck_to_file(self):
-        self.anki_deck_path = _wr_apkg(self.anki_deck, self.song_name)
+        self.anki_deck_path = self._wr_apkg(self.anki_deck, self.song_name)
     
     def build_cloze_deletion_sentence(self, lyric, translation):
         #cleanse of stop words and cloze words/phrases that aren't in my vocabulary (database? restAPI?)
@@ -127,6 +129,18 @@ class Lyrics():
             if self.anki_deck_path: os.remove(self.anki_deck_path)
         except OSError:
             pass
+    def _wr_apkg(self, deck, deckname):
+        """Writes deck to Anki apkg file
+        @params: anki deck object, deckname
+        @returns path to output dec
+    """
+        if not os.path.exists("decks"):
+            os.makedirs("decks")
+        fout = 'decks/{NAME}.apkg'.format(NAME=deckname)
+        pkg = Package(deck)
+        self.pkg = pkg.write_to_file(fout)
+        print('  {N} Notes WROTE: {APKG}'.format(N=len(deck.notes), APKG=fout))
+        return fout
 
 ##############################
 ## Helper Methods
@@ -141,19 +155,6 @@ def _build_deck(notes, deckname):
     for note in notes:
         deck.add_note(note)
     return deck
-
-def _wr_apkg(deck, deckname):
-    """Writes deck to Anki apkg file
-        @params: anki deck object, deckname
-        @returns path to output dec
-    """
-    if not os.path.exists("decks"):
-        os.makedirs("decks")
-    fout = 'decks/{NAME}.apkg'.format(NAME=deckname)
-    pkg = Package(deck)
-    pkg.write_to_file(fout)
-    print('  {N} Notes WROTE: {APKG}'.format(N=len(deck.notes), APKG=fout))
-    return fout
 
 if __name__ == "__main__":
     pass
