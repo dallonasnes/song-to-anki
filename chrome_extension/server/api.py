@@ -58,11 +58,14 @@ class Lyrics():
 
     def build_anki_deck(self):
         self.notes = []
-        for lyric, translation in self.lyrics.items():
-            cloze_sentence, translation = self.build_cloze_deletion_sentence(lyric, translation)
-            fields = [cloze_sentence, translation]
-            my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
-            self.notes.append(my_cloze_note)
+        #self.lyrics is a list of objects
+        #so lyricObj is the object at each element in the list
+        for lyricObj in self.lyrics:
+            for lyric, translation in lyricObj.items():
+                cloze_sentence, translation = self.build_cloze_deletion_sentence(lyric, translation)
+                fields = [cloze_sentence, translation]
+                my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
+                self.notes.append(my_cloze_note)
 
         self.anki_deck = _build_deck(self.notes, self.song_name)
         
