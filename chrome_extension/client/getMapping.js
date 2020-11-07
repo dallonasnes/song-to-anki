@@ -29,7 +29,7 @@ function sleep(ms) {
         }
 
         if (lyrics.length === 2){
-            let mapping = {};
+            let mapping = [];
             let xa = Array.from(lyrics[1].getElementsByTagName('div'));
             let ya = Array.from(lyrics[0].getElementsByTagName('div'));
 
@@ -98,8 +98,10 @@ function sleep(ms) {
                             let songLyric = song_lyrics[songLyricIdx];
                             let trLyric = tr_lyrics[trLyricIdx];
                             //if no [ in the lyrics then proceed
+                            let tmpObj = {};
                             if (!(songLyric.includes('[') || trLyric.includes('[') | songLyric.includes('....') || trLyric.includes('....'))){
-                                mapping[songLyric] = trLyric;
+                                tmpObj[songLyric] = trLyric;
+                                mapping.push(tmpObj);
                             }
                         }
                     }
