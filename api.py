@@ -58,14 +58,28 @@ class Lyrics():
 
     def build_anki_deck(self):
         self.notes = []
-        #self.lyrics is a list of objects
-        #so lyricObj is the object at each element in the list
-        for lyricObj in self.lyrics:
-            for lyric, translation in lyricObj.items():
+
+        #this try catch block is a hack to deal with versioning issues
+        #in the client-side code deployed as a chrome extension vs the one that I've updated in git
+        try:
+            #old version
+            #self.lyrics holds a dictionary mapping lyrics to translated lyrics
+            #issue here is that it doesn't keep lyrics in the correct order
+            for lyric, translation in self.lyrics.items():
                 cloze_sentence, translation = self.build_cloze_deletion_sentence(lyric, translation)
                 fields = [cloze_sentence, translation]
                 my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
                 self.notes.append(my_cloze_note)
+        except:
+            #new version to solve lyric ordering issue
+            #self.lyrics is a list of objects
+            #where each object has key of song lyric and value of translated lyric
+            for lyricObj in self.lyrics:
+                for lyric, translation in lyricObj.items():
+                    cloze_sentence, translation = self.build_cloze_deletion_sentence(lyric, translation)
+                    fields = [cloze_sentence, translation]
+                    my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
+                    self.notes.append(my_cloze_note)
 
         self.anki_deck = _build_deck(self.notes, self.song_name)
         
