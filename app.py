@@ -5,11 +5,12 @@ from flask import Flask
 from routes import configure_routes
 
 app = Flask(__name__)
+port = int(os.environ.get("PORT", 5000))
 
 configure_routes(app)
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True, host='0.0.0.0', port=port)
 
 #TODO
 #2. sync server-only proj back up with improvements to this api

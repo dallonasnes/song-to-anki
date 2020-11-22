@@ -3,7 +3,7 @@ from flask import jsonify, request, send_from_directory, send_file
 import json
 from api import Lyrics
 from sendgridAPI import send_email
-import nltk
+#import nltk
 
 LYRICS_TRANSLATE = 'lyricstranslate.com'
 
@@ -63,8 +63,8 @@ def configure_routes(app):
     def anki_mobile_content_handler():
         try:
             args = request.args
-            a_list = nltk.tokenize.sent_tokenize(args.get("text"))
-            return json_success({"notes": a_list})
+            #a_list = nltk.tokenize.sent_tokenize(args.get("text"))
+            return json_success({"notes": [args]})
         except Exception as ex:
             print(ex)
             return json_failure({"exception": str(ex)})

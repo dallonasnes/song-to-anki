@@ -1,3 +1,6 @@
+zappa*
+sendgrid*
+chrome_*
 *.apkg
 __pycache__
 decks/
