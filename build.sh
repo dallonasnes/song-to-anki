@@ -1,0 +1,1 @@
+time docker build --rm -f "Dockerfile" -t mobile_content_to_anki .
