@@ -57,6 +57,17 @@ def configure_routes(app):
             send_email(subjectMsg, contentMsg)
             log_server_exception(ex)
             return json_failure({"exception": str(ex)})
+    
+    @app.route("/mobile/content-to-anki/", methods=['GET'])
+    def anki_mobile_content_handler():
+        try:
+            obj = request.args
+            print(obj)
+            
+            return json_success({"helloWorld": obj})
+        except Exception as ex:
+            print(ex)
+            return json_failure({"exception": str(ex)})
 
 
 ######################################

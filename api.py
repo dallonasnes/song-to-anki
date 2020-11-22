@@ -125,7 +125,7 @@ class Lyrics():
             cloze_sentence[idx] = cloze_word
 
         return ' '.join(cloze_sentence), ' '.join(translation_tokens)
-    
+
 
 ##############################
 ## Helper Methods
