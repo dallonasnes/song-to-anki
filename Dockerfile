@@ -1,12 +1,28 @@
-FROM python:latest
-RUN apt-get update
+# pull official base image
+FROM python:3.8
 
-ENV APP_HOME /usr/src/app
-WORKDIR /$APP_HOME
+# set work directory
+WORKDIR /usr/src/app
 
-COPY ./ $APP_HOME/
-RUN pip install --no-cache-dir -r requirements.txt
-#RUN python -m nltk.downloader all
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-ENV FLASK_ENV="docker"
+RUN apt-get update && apt-get install -y gcc python3-dev
+#&& apk add postgresql-dev gcc python3-dev musl-dev
+
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt /usr/src/app/requirements.txt
+RUN export LDFLAGS="-L/usr/local/opt/openssl/lib"
+RUN pip install -r requirements.txt
+
+# copy project
+COPY . /usr/src/app/
+
 EXPOSE 5000
+
+RUN ls -la /usr/src/app/
+RUN chmod +x /usr/src/app/docker-entrypoint.sh
+
+ENTRYPOINT ["/usr/src/app/docker-entrypoint.sh"]
