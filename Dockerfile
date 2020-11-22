@@ -22,6 +22,6 @@ RUN python3 -m nltk.downloader all
 RUN adduser myuser
 USER myuser
 
-EXPOSE 5000
+# EXPOSE 5000
 
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:$PORT"]
+CMD ["gunicorn", "app:app"]
