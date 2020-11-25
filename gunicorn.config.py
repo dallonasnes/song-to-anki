@@ -1,7 +1,8 @@
-# import multiprocessing
+import multiprocessing
+import os
+port = int(os.environ.get("PORT", 5000))
+bind = "0.0.0.0:" + str(port)
 
-# bind = "0.0.0.0:5000"
-
-# workers = multiprocessing.cpu_count() * 2 + 1
-# max_requests = 1000
+#workers = multiprocessing.cpu_count() * 2 + 1
+#max_requests = 1000
 # worker_class = 'gevent'
