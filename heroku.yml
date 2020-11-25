@@ -1,9 +1,6 @@
 build:
-    docker:
-        web: Dockerfile
-release:
-    image: web
-    #command:
-    #  - python manage.py collectstatic --noinput
+  docker:
+    web: Dockerfile
 run:
-    web: gunicorn app:app
+  web: gunicorn -c gunicorn.config.py app:app
+  
