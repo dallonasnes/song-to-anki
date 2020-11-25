@@ -67,6 +67,8 @@ def configure_routes(app):
         try:
             args = request.args
             a_list = nltk.tokenize.sent_tokenize(args.get("text"))
+            i = 5
+            j = 10 - i 
             return json_success({"notes": [a_list]})
         except Exception as ex:
             print(ex)
