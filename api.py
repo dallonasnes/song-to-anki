@@ -5,6 +5,7 @@ from customPackage import Package
 
 from wordfreq import zipf_frequency
 import langcodes
+import nltk
 
 ##############################
 ## Declarations
@@ -42,6 +43,7 @@ MY_CLOZE_MODEL = Model(
 )
 
 CLOZE_LIMIT = 2
+MOBILE_CLOZE_LIMIT = 1
 
 ##############################
 ## Class Definition
@@ -134,6 +136,65 @@ class Lyrics:
             cloze_sentence[idx] = cloze_word
 
         return " ".join(cloze_sentence), " ".join(translation_tokens)
+
+
+# TODO: some logic in this class is duplicated from the class above it
+class Text:
+    def __init__(self, lang_code, text, nonce):
+        self.lang_code = lang_code
+        self.text = text
+        self.nonce = nonce
+        self.known_words = set()
+        self.sentences = []  # populated in tokenize method
+        self.cloze_sentences = []
+
+    def tokenize(self):
+        a_list = nltk.tokenize.sent_tokenize(self.text)
+        # strip each sent from the tokenizer
+        # TODO: get rid of duplicate sentences
+        self.sentences = [sent.strip() for sent in a_list]
+
+    def get_anki_notes(self):
+        for sent in self.sentences:
+            self.build_cloze_sentence(sent)
+        return self.cloze_sentences
+
+    def hydrate_known_words(self):
+        # remember that known_words is a set
+        pass
+
+    def build_cloze_sentence(self, sentence):
+        # cleanse of stop words and cloze words/phrases that aren't in my vocabulary (database? restAPI?)
+
+        # TODO: what if there are "  " or more separating a word...or tabs etc?
+        cloze_sentence = [word for word in sentence.split(" ")]
+
+        # TODO: revise this logic when i have storage working. because then may want most frequent unknown word
+        # sort words from least frequent to most frequent based on freq score
+        word_freq_scores = sorted(
+            [
+                (word, zipf_frequency(word.lower(), self.lang_code))
+                for word in cloze_sentence
+            ],
+            key=lambda x: x[1],
+        )
+        assert len(word_freq_scores) == len(cloze_sentence)
+        # make cloze out of first least-frequent word that isn't already in my vocabulary
+        # get two rarest words for cloze
+        count = 0
+        for pair in word_freq_scores:
+            rarest_word = pair[0]
+            if rarest_word.lower() not in self.known_words:
+                count += 1
+                idx = cloze_sentence.index(rarest_word)
+                # let's cut out all words in the first card only
+                cloze_word = "{{c1::" + rarest_word + "}}"
+                cloze_sentence[idx] = cloze_word
+                self.known_words.add(rarest_word.lower())
+                if count >= MOBILE_CLOZE_LIMIT:
+                    # TODO: clean this up if we really only want one per sentence
+                    self.cloze_sentences.append(cloze_sentence)
+                    break
 
 
 ##############################

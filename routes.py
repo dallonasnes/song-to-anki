@@ -1,7 +1,9 @@
 from datetime import datetime
 from flask import jsonify, request, send_from_directory, send_file
 import json
-from api import Lyrics
+import validators
+import langcodes
+from api import Lyrics, Text
 from sendgridAPI import send_email
 
 import nltk
@@ -69,13 +71,25 @@ def configure_routes(app):
         try:
             obj = request.get_json()
             # TODO: cleanse and validate input
-            text = obj["text"]
-            lang = obj["lang"]
-            nonce = obj["nonce"]
-            import pdb
+            text = obj["text"].strip()
+            lang = obj["lang"].strip().lower()
+            nonce = obj["nonce"].strip()
+            # validate lang
+            if not lang.isalpha():
+                raise Exception("Invalid input language arguments: {}".format(lang))
 
-            pdb.set_trace()
-            a_list = nltk.tokenize.sent_tokenize(text)
+            # TODO: right now language='en' hardcoded meaning client always sends language name written in english
+            # this much be changed when the mobile app supports more language
+            lang_code: str = langcodes.find(lang, language="en").language
+            # NEXT: determine if text is a url
+            if validators.url(text):
+                a_list = []
+            else:
+                text_obj = Text(lang_code, text, nonce)
+                text_obj.hydrate_known_words()
+                text_obj.tokenize()
+                a_list = text_obj.get_anki_notes()
+
             return json_success({"notes": a_list, "lang": lang, "nonce": nonce})
         except Exception as ex:
             print(ex)
