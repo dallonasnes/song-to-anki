@@ -52,4 +52,20 @@ def test_youtube_video_autosub_exists():
     assert response.status_code == 200
     resp_json = response.get_json()
     notes = resp_json["notes"]
-    assert len(notes) == 261
+    assert len(notes) >= 261
+
+
+def test_article():
+    """Tests to ensure basic functionality of building notes from an article"""
+    client = app.test_client()
+    url = "https://www.lemonde.fr/idees/article/2020/11/25/loi-pluriannelle-de-programmation-de-la-recherche-un-rate-supplementaire-dans-la-triste-histoire-des-lois-relatives-aux-universites-depuis-mai-68_6061020_3232.html"
+    lang = "french"
+    nonce = "1"
+
+    data = {"lang": lang, "nonce": nonce, "text": url}
+    response = client.put(mobile_endpoint, json=data)
+
+    assert response.status_code == 200
+    resp_json = response.get_json()
+    notes = resp_json["notes"]
+    assert len(notes) > 0

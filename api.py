@@ -8,6 +8,8 @@ import langcodes
 import nltk
 import subprocess
 import os
+import requests
+from bs4 import BeautifulSoup
 
 
 ##############################
@@ -182,7 +184,10 @@ class ContentUrl:
 
     def process_link(self):
         # download article with beautiful soup
-        pass
+        article = requests.get(self.url).text
+        soup = BeautifulSoup(article, "html.parser")
+        a_list = nltk.tokenize.sent_tokenize(soup.text)
+        self.sentences = [sent.strip() for sent in a_list]
 
     def process_youtube(self):
         # first try to get manual subtitles

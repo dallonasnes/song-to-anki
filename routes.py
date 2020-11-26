@@ -82,7 +82,7 @@ def configure_routes(app):
             lang_code: str = langcodes.find(lang, language="en").language
             if validators.url(text):
                 url = text  # we know text is actually a url
-                content_obj = ContentUrl(lang_code, text, nonce)
+                content_obj = ContentUrl(lang_code, url, nonce)
                 content_obj.hydrate_known_words()
                 if "youtube" in url or "youtu.be" in url:
                     content_obj.process_youtube()
