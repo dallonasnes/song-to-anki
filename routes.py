@@ -72,6 +72,9 @@ def configure_routes(app):
             text = obj["text"]
             lang = obj["lang"]
             nonce = obj["nonce"]
+            import pdb
+
+            pdb.set_trace()
             a_list = nltk.tokenize.sent_tokenize(text)
             return json_success({"notes": a_list, "lang": lang, "nonce": nonce})
         except Exception as ex:
