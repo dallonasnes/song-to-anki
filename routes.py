@@ -65,7 +65,6 @@ def configure_routes(app):
     @app.route("/mobile/content-to-anki/", methods=["PUT"])
     def anki_mobile_content_handler():
         try:
-            return json_success({"hello": "hello world"})
             obj = request.get_json()
             # TODO: cleanse and validate input
             text = obj["text"]
