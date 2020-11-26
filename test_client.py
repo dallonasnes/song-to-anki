@@ -37,3 +37,19 @@ def test_bad_language_input_mobile_endpoint():
     data = {"lang": "not 4 realz", "nonce": "1", "text": text}
     response = client.put(mobile_endpoint, json=data)
     assert response.status_code == 400
+
+
+def test_youtube_video_autosub_exists():
+    """Tests to ensure basic functionality of building notes from a youtube video with autosubtitles"""
+    client = app.test_client()
+    url = "https://www.youtube.com/watch?v=OxTicIgXyKw"
+    lang = "french"
+    nonce = "1"
+
+    data = {"lang": lang, "nonce": nonce, "text": url}
+    response = client.put(mobile_endpoint, json=data)
+
+    assert response.status_code == 200
+    resp_json = response.get_json()
+    notes = resp_json["notes"]
+    assert len(notes) == 261

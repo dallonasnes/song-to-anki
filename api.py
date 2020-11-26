@@ -2,11 +2,11 @@ from genanki import Model
 from genanki import Note
 from genanki import Deck
 from customPackage import Package
-
+from typing import List, Set
 from wordfreq import zipf_frequency
 import langcodes
 import nltk
-import os
+import subprocess
 
 ##############################
 ## Declarations
@@ -45,6 +45,13 @@ MY_CLOZE_MODEL = Model(
 
 CLOZE_LIMIT = 2
 MOBILE_CLOZE_LIMIT = 1
+NO_SUBTITLES_WARNING = "video doesn't have subtitles"
+WRITING_SUBTITLES_MSG = "Writing video subtitles to:"
+DOWNLOADS = "downloads"
+import os
+
+if not os.path.exists(DOWNLOADS):
+    os.makedirs(DOWNLOADS)
 
 ##############################
 ## Class Definition
@@ -144,7 +151,8 @@ class ContentUrl:
     def __init__(self, lang_code, url, nonce):
         self.lang_code = lang_code
         self.url = url
-        self.nonce = nonce
+        self.nonce = str(nonce)
+        self.fileprefix = DOWNLOADS + "/" + self.nonce
         self.known_words = set()
         self.sentences = []  # populated in tokenize method
         self.cloze_sentences = []
@@ -153,9 +161,77 @@ class ContentUrl:
         # use a generic helper fn to avoid duplicated logic
         pass
 
-    def process(self):
+    def parse_vtt_file(self, file_path):
+        with open(file_path, "r") as f:
+            sentences = [
+                x.strip()
+                for x in f.readlines()
+                if "</" not in x and "-->" not in x and len(x.strip()) > 0
+            ]
+            # dedup
+            sentences = list(set(sentences))
+            return sentences
+
+    def get_anki_notes(self):
+        for sent in self.sentences:
+            _build_cloze_sentence(
+                sent, self.lang_code, self.known_words, self.cloze_sentences
+            )
+        return self.cloze_sentences
+
+    def process_link(self):
+        # download article with beautiful soup
         pass
-        # first let's just pretend it's a youtube video and use youtube_dl on it. if it fails, then it's not a youtube video
+
+    def process_youtube(self):
+        # first try to get manual subtitles
+        # TODO: convert lang_code into lang_code used by youtube-dl
+        process = subprocess.Popen(
+            [
+                "youtube-dl",
+                self.url,
+                "--skip-download",
+                "--sub-lang",
+                self.lang_code,
+                "--sub-format",
+                "vtt",
+                "--write-sub",
+                "-o",
+                self.fileprefix,
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        out, err = process.communicate()
+        if NO_SUBTITLES_WARNING in str(err):
+            # there were no manual subtitles, so try again for automatic subtitles
+            process = subprocess.Popen(
+                [
+                    "youtube-dl",
+                    self.url,
+                    "--skip-download",
+                    "--sub-lang",
+                    self.lang_code,
+                    "--sub-format",
+                    "vtt",
+                    "--write-auto-sub",
+                    "-o",
+                    self.fileprefix,
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            out, err = process.communicate()
+            if not WRITING_SUBTITLES_MSG in str(out):
+                raise Exception("Can't get Youtube subtitles for video")
+
+        file_path = str(self.fileprefix) + "." + str(self.lang_code) + ".vtt"
+        try:
+            self.sentences = self.parse_vtt_file(file_path)
+            os.remove(file_path)
+        except:
+            os.remove(file_path)
+            raise
 
 
 # TODO: some logic in this class is duplicated from the class above it
@@ -176,50 +252,55 @@ class Text:
 
     def get_anki_notes(self):
         for sent in self.sentences:
-            self.build_cloze_sentence(sent)
+            _build_cloze_sentence(
+                sent, self.lang_code, self.known_words, self.cloze_sentences
+            )
         return self.cloze_sentences
 
     def hydrate_known_words(self):
         # remember that known_words is a set
         pass
 
-    def build_cloze_sentence(self, sentence):
-        # cleanse of stop words and cloze words/phrases that aren't in my vocabulary (database? restAPI?)
-
-        # TODO: what if there are "  " or more separating a word...or tabs etc?
-        cloze_sentence = [word for word in sentence.split(" ")]
-
-        # TODO: revise this logic when i have storage working. because then may want most frequent unknown word
-        # sort words from least frequent to most frequent based on freq score
-        word_freq_scores = sorted(
-            [
-                (word, zipf_frequency(word.lower(), self.lang_code))
-                for word in cloze_sentence
-            ],
-            key=lambda x: x[1],
-        )
-        assert len(word_freq_scores) == len(cloze_sentence)
-        # make cloze out of first least-frequent word that isn't already in my vocabulary
-        # get two rarest words for cloze
-        count = 0
-        for pair in word_freq_scores:
-            rarest_word = pair[0]
-            if rarest_word.lower() not in self.known_words:
-                count += 1
-                idx = cloze_sentence.index(rarest_word)
-                # let's cut out all words in the first card only
-                cloze_word = "{{c1::" + rarest_word + "}}"
-                cloze_sentence[idx] = cloze_word
-                self.known_words.add(rarest_word.lower())
-                if count >= MOBILE_CLOZE_LIMIT:
-                    # TODO: clean this up if we really only want one per sentence
-                    self.cloze_sentences.append(cloze_sentence)
-                    break
-
 
 ##############################
 ## Helper Methods
 ##############################
+def _build_cloze_sentence(
+    sentence: str,
+    lang_code: str,
+    known_words: Set[str],
+    output_cloze_sentences: List[str],
+):
+    # cleanse of stop words and cloze words/phrases that aren't in my vocabulary (database? restAPI?)
+
+    # TODO: what if there are "  " or more separating a word...or tabs etc?
+    cloze_sentence = [word for word in sentence.split(" ")]
+
+    # TODO: revise this logic when i have storage working. because then may want most frequent unknown word
+    # sort words from least frequent to most frequent based on freq score
+    word_freq_scores = sorted(
+        [(word, zipf_frequency(word.lower(), lang_code)) for word in cloze_sentence],
+        key=lambda x: x[1],
+    )
+    assert len(word_freq_scores) == len(cloze_sentence)
+    # make cloze out of first least-frequent word that isn't already in my vocabulary
+    # get two rarest words for cloze
+    count = 0
+    for pair in word_freq_scores:
+        rarest_word = pair[0]
+        if rarest_word.lower() not in known_words:
+            count += 1
+            idx = cloze_sentence.index(rarest_word)
+            # let's cut out all words in the first card only
+            cloze_word = "{{c1::" + rarest_word + "}}"
+            cloze_sentence[idx] = cloze_word
+            known_words.add(rarest_word.lower())
+            if count >= MOBILE_CLOZE_LIMIT:
+                # TODO: clean this up if we really only want one per sentence
+                output_cloze_sentences.append(cloze_sentence)
+                break
+
+
 def _build_deck(notes, deckname):
     """Builds anki deck out of notes. Returns anki deck object"""
     deck = Deck(deck_id=23, name=deckname)
