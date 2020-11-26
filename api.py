@@ -7,6 +7,8 @@ from wordfreq import zipf_frequency
 import langcodes
 import nltk
 import subprocess
+import os
+
 
 ##############################
 ## Declarations
@@ -48,7 +50,6 @@ MOBILE_CLOZE_LIMIT = 1
 NO_SUBTITLES_WARNING = "video doesn't have subtitles"
 WRITING_SUBTITLES_MSG = "Writing video subtitles to:"
 DOWNLOADS = "downloads"
-import os
 
 if not os.path.exists(DOWNLOADS):
     os.makedirs(DOWNLOADS)
@@ -85,8 +86,8 @@ class Lyrics:
             # new version to solve lyric ordering issue
             # self.lyrics is a list of objects
             # where each object has key of song lyric and value of translated lyric
-            for lyricObj in self.lyrics:
-                for lyric, translation in lyricObj.items():
+            for lyric_obj in self.lyrics:
+                for lyric, translation in lyric_obj.items():
                     cloze_sentence, translation = self.build_cloze_deletion_sentence(
                         lyric, translation
                     )
