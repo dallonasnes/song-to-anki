@@ -1,5 +1,7 @@
 FROM python:3.8.1
 
+RUN apt-get update && apt-get install -y youtube-dl
+
 ENV APP_HOME /app
 WORKDIR $APP_HOME
 

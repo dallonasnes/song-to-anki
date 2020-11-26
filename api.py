@@ -6,6 +6,7 @@ from customPackage import Package
 from wordfreq import zipf_frequency
 import langcodes
 import nltk
+import os
 
 ##############################
 ## Declarations
@@ -136,6 +137,25 @@ class Lyrics:
             cloze_sentence[idx] = cloze_word
 
         return " ".join(cloze_sentence), " ".join(translation_tokens)
+
+
+# TODO: some logic in this class is duplicated from the class above it
+class ContentUrl:
+    def __init__(self, lang_code, url, nonce):
+        self.lang_code = lang_code
+        self.url = url
+        self.nonce = nonce
+        self.known_words = set()
+        self.sentences = []  # populated in tokenize method
+        self.cloze_sentences = []
+
+    def hydrate_known_words(self):
+        # use a generic helper fn to avoid duplicated logic
+        pass
+
+    def process(self):
+        pass
+        # first let's just pretend it's a youtube video and use youtube_dl on it. if it fails, then it's not a youtube video
 
 
 # TODO: some logic in this class is duplicated from the class above it

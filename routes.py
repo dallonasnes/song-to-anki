@@ -3,7 +3,7 @@ from flask import jsonify, request, send_from_directory, send_file
 import json
 import validators
 import langcodes
-from api import Lyrics, Text
+from api import Lyrics, Text, ContentUrl
 from sendgridAPI import send_email
 
 import nltk
@@ -83,7 +83,9 @@ def configure_routes(app):
             lang_code: str = langcodes.find(lang, language="en").language
             # NEXT: determine if text is a url
             if validators.url(text):
-                a_list = []
+                content_obj = ContentUrl(lang_code, text, nonce)
+                content_obj.hyderate_known_words()
+                content_obj.process()
             else:
                 text_obj = Text(lang_code, text, nonce)
                 text_obj.hydrate_known_words()
