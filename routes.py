@@ -62,14 +62,16 @@ def configure_routes(app):
             log_server_exception(ex)
             return json_failure({"exception": str(ex)})
 
-    @app.route("/mobile/content-to-anki/", methods=["GET"])
+    @app.route("/mobile/content-to-anki/", methods=["PUT"])
     def anki_mobile_content_handler():
         try:
-            args = request.args
-            a_list = nltk.tokenize.sent_tokenize(args.get("text"))
-            i = 5
-            j = 10 - i 
-            return json_success({"notes": [a_list]})
+            obj = request.get_json()
+            # TODO: cleanse and validate input
+            text = obj["text"]
+            lang = obj["lang"]
+            nonce = obj["nonce"]
+            a_list = nltk.tokenize.sent_tokenize(text)
+            return json_success({"notes": a_list, "lang": lang, "nonce": nonce})
         except Exception as ex:
             print(ex)
             return json_failure({"exception": str(ex)})
