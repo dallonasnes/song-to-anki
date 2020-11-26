@@ -6,6 +6,8 @@ from sendgridAPI import send_email
 
 import nltk
 
+nltk.download("punkt")
+
 LYRICS_TRANSLATE = "lyricstranslate.com"
 
 
