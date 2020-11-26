@@ -26,3 +26,14 @@ def test_basic_use_mobile_endpoint():
     resp_json = response.get_json()
     notes = resp_json["notes"]
     assert len(notes) == 3
+
+
+def test_bad_language_input_mobile_endpoint():
+    """Tests to ensure failure response code if language input is invalid"""
+
+    client = app.test_client()
+    # here text has three sentences
+    text = "hello world. it's me. just wondering how you're doing these days?"
+    data = {"lang": "not 4 realz", "nonce": "1", "text": text}
+    response = client.put(mobile_endpoint, json=data)
+    assert response.status_code == 400
