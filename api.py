@@ -303,7 +303,7 @@ def _build_cloze_sentence(
             known_words.add(rarest_word.lower())
             if count >= MOBILE_CLOZE_LIMIT:
                 # TODO: clean this up if we really only want one per sentence
-                output_cloze_sentences.append(cloze_sentence)
+                output_cloze_sentences.append(" ".join(cloze_sentence))
                 break
 
 
