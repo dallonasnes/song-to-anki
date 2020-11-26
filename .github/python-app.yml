@@ -5,7 +5,7 @@ name: Python application
 
 on:
   push:
-    branches: [ heroku-server, develop ]
+    branches: [ heroku-server ]
   pull_request:
     branches: [ master ]
 
