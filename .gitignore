@@ -1,3 +1,5 @@
+testing/
+data/
 .idea
 .*.swp
 zappa*

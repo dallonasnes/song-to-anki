@@ -69,3 +69,19 @@ def test_article():
     resp_json = response.get_json()
     notes = resp_json["notes"]
     assert len(notes) > 0
+
+
+def test_youtube_video_chinese():
+    """Tests to ensure that hack to change langcode from zh to zh-Hant works on youtube"""
+    client = app.test_client()
+    url = "https://www.youtube.com/watch?v=OxTicIgXyKw"
+    lang = "chinese"
+    nonce = "1"
+
+    data = {"lang": lang, "nonce": nonce, "text": url}
+    response = client.put(mobile_endpoint, json=data)
+
+    assert response.status_code == 200
+    resp_json = response.get_json()
+    notes = resp_json["notes"]
+    assert len(notes) >= 0

@@ -80,6 +80,9 @@ def configure_routes(app):
             # TODO: right now language='en' hardcoded meaning client always sends language name written in english
             # this much be changed when the mobile app supports more language
             lang_code: str = langcodes.find(lang, language="en").language
+            # hack: youtube subtitles for chinese are searchable by zh-Hant, not zh
+            if lang_code == "zh" or lang_code == "cmn":
+                lang_code = "zh-Hant"
             if validators.url(text):
                 url = text  # we know text is actually a url
                 content_obj = ContentUrl(lang_code, url, nonce)
