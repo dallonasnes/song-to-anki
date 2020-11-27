@@ -260,8 +260,7 @@ class Text:
     def tokenize(self):
         a_list = nltk.tokenize.sent_tokenize(self.text)
         # strip each sent from the tokenizer
-        # TODO: get rid of duplicate sentences
-        self.sentences = [sent.strip() for sent in a_list]
+        self.sentences = list(set([sent.strip() for sent in a_list]))  # dedup using set
 
     def get_anki_notes(self):
         for sent in self.sentences:
