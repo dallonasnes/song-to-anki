@@ -50,6 +50,7 @@ MY_CLOZE_MODEL = Model(
 
 CLOZE_LIMIT = 2
 MOBILE_CLOZE_LIMIT = 1
+MIN_SENTENCE_LENGTH = 2
 NO_SUBTITLES_WARNING = "video doesn't have subtitles"
 WRITING_SUBTITLES_MSG = "Writing video subtitles to:"
 DOWNLOADS = "downloads"
@@ -305,6 +306,11 @@ def _build_cloze_sentence(
     known_words: Set[str],
     output_cloze_sentences: List[str],
 ):
+
+    # don't deal with sentences that are too short
+    if len(sentence) < MIN_SENTENCE_LENGTH:
+        return
+
     # cleanse of stop words and cloze words/phrases that aren't in my vocabulary (database? restAPI?)
 
     # TODO: what if there are "  " or more separating a word...or tabs etc?
