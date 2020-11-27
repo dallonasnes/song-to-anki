@@ -311,9 +311,7 @@ def _build_cloze_sentence(
     if len(sentence) < MIN_SENTENCE_LENGTH:
         return
 
-    # cleanse of stop words and cloze words/phrases that aren't in my vocabulary (database? restAPI?)
-
-    # TODO: what if there are "  " or more separating a word...or tabs etc?
+    # TODO: what if there are "  " or more separating a word...or tabs etc? that may indicate a bad line with no useful language content
     cloze_sentence = [word for word in sentence.split(" ")]
 
     # TODO: revise this logic when i have storage working. because then may want most frequent unknown word
@@ -324,7 +322,6 @@ def _build_cloze_sentence(
     )
     assert len(word_freq_scores) == len(cloze_sentence)
     # make cloze out of first least-frequent word that isn't already in my vocabulary
-    # get two rarest words for cloze
     count = 0
     for pair in word_freq_scores:
         rarest_word = pair[0]
