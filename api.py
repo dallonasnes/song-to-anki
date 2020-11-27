@@ -9,6 +9,7 @@ import nltk
 import subprocess
 import os
 import requests
+import pickle
 from bs4 import BeautifulSoup
 
 
@@ -52,7 +53,10 @@ MOBILE_CLOZE_LIMIT = 1
 NO_SUBTITLES_WARNING = "video doesn't have subtitles"
 WRITING_SUBTITLES_MSG = "Writing video subtitles to:"
 DOWNLOADS = "downloads"
+DATA = "data"
 
+if not os.path.exists(DATA):
+    os.makedirs(DATA)
 if not os.path.exists(DOWNLOADS):
     os.makedirs(DOWNLOADS)
 
@@ -161,8 +165,7 @@ class ContentUrl:
         self.cloze_sentences = []
 
     def hydrate_known_words(self):
-        # use a generic helper fn to avoid duplicated logic
-        pass
+        self.known_words: Set[str] = _hydrate_known_words(self.nonce, self.lang_code)
 
     def parse_vtt_file(self, file_path):
         with open(file_path, "r") as f:
@@ -180,6 +183,8 @@ class ContentUrl:
             _build_cloze_sentence(
                 sent, self.lang_code, self.known_words, self.cloze_sentences
             )
+        # now that we've built all the cloze sentences, let's flush the updated known_words set to disk
+        _flush_known_words_to_disk(self.known_words, self.nonce, self.lang_code)
         return self.cloze_sentences
 
     def process_link(self):
@@ -187,7 +192,9 @@ class ContentUrl:
         article = requests.get(self.url).text
         soup = BeautifulSoup(article, "html.parser")
         a_list = nltk.tokenize.sent_tokenize(soup.text)
-        self.sentences = [sent.strip() for sent in a_list]
+        sentences = [sent.strip() for sent in a_list]
+        # dedup
+        self.sentences = list(set(sentences))
 
     def process_youtube(self):
         # first try to get manual subtitles
@@ -261,16 +268,38 @@ class Text:
             _build_cloze_sentence(
                 sent, self.lang_code, self.known_words, self.cloze_sentences
             )
+        # now that we've built all the cloze sentences, let's flush the updated known_words set to disk
+        _flush_known_words_to_disk(self.known_words, self.nonce, self.lang_code)
         return self.cloze_sentences
 
     def hydrate_known_words(self):
         # remember that known_words is a set
-        pass
+        self.known_words: Set[str] = _hydrate_known_words(self.nonce, self.lang_code)
 
 
 ##############################
 ## Helper Methods
 ##############################
+def _hydrate_known_words(nonce: str, lang_code: str):
+    rtn_val = set()
+    try:
+        with open(DATA + "/" + nonce + lang_code + ".pickle", "rb") as fp:
+            rtn_val = set(pickle.load(fp))
+    except:
+        # file doesn't exist for this user + lang combo
+        pass
+    return rtn_val
+
+
+def _flush_known_words_to_disk(known_words: Set[str], nonce: str, lang_code: str):
+    try:
+        filepath = DATA + "/" + nonce + lang_code + ".pickle"
+        with open(filepath, "wb") as fp:
+            pickle.dump(known_words, fp)
+    except Exception as ex:
+        print("failed to flush known words to disk")
+
+
 def _build_cloze_sentence(
     sentence: str,
     lang_code: str,

@@ -84,11 +84,12 @@ def configure_routes(app):
                 url = text  # we know text is actually a url
                 content_obj = ContentUrl(lang_code, url, nonce)
                 content_obj.hydrate_known_words()
-                if "youtube" in url or "youtu.be" in url:
+                if "youtube" in url.lower() or "youtu.be" in url.lower():
                     content_obj.process_youtube()
                 else:
                     content_obj.process_link()
                 a_list = content_obj.get_anki_notes()
+
             else:
                 text_obj = Text(lang_code, text, nonce)
                 text_obj.hydrate_known_words()
