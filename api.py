@@ -283,7 +283,9 @@ class Text:
 ##############################
 def _dedup_list(sequence: List[str]) -> List[str]:
     seen = set()
-    return [x for x in sequence if not (x in seen or seen.add(x))]
+    return [
+        x for x in sequence if not (x in seen or seen.add(x))
+    ]  # note that seen.add() -> None
 
 
 def _hydrate_known_words(nonce: str, lang_code: str):
