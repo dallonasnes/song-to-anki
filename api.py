@@ -175,7 +175,7 @@ class ContentUrl:
                 if "</" not in x and "-->" not in x and len(x.strip()) > 0
             ]
             # dedup
-            sentences = list(set(sentences))
+            sentences = _dedup_list(sentences)
             return sentences
 
     def get_anki_notes(self):
@@ -194,7 +194,7 @@ class ContentUrl:
         a_list = nltk.tokenize.sent_tokenize(soup.text)
         sentences = [sent.strip() for sent in a_list]
         # dedup
-        self.sentences = list(set(sentences))
+        self.sentences = _dedup_list(sentences)
 
     def process_youtube(self):
         # first try to get manual subtitles
@@ -260,7 +260,9 @@ class Text:
     def tokenize(self):
         a_list = nltk.tokenize.sent_tokenize(self.text)
         # strip each sent from the tokenizer
-        self.sentences = list(set([sent.strip() for sent in a_list]))  # dedup using set
+        self.sentences = _dedup_list(
+            [sent.strip() for sent in a_list]
+        )  # dedup using set
 
     def get_anki_notes(self):
         for sent in self.sentences:
@@ -279,6 +281,11 @@ class Text:
 ##############################
 ## Helper Methods
 ##############################
+def _dedup_list(sequence: List[str]) -> List[str]:
+    seen = set()
+    return [x for x in sequence if not (x in seen or seen.add(x))]
+
+
 def _hydrate_known_words(nonce: str, lang_code: str):
     rtn_val = set()
     try:
@@ -312,7 +319,6 @@ def _build_cloze_sentence(
 
     # TODO: what if there are "  " or more separating a word...or tabs etc? that may indicate a bad line with no useful language content
     cloze_sentence = [word for word in sentence.split(" ")]
-
     # TODO: revise this logic when i have storage working. because then may want most frequent unknown word
     # sort words from least frequent to most frequent based on freq score
     word_freq_scores = sorted(

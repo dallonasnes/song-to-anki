@@ -85,3 +85,23 @@ def test_youtube_video_chinese():
     resp_json = response.get_json()
     notes = resp_json["notes"]
     assert len(notes) >= 0
+
+
+def test_arabic_sentence():
+    """Tests to ensure program handles right to left text"""
+    client = app.test_client()
+    text = "وشكل إسقاط الطبقة السياسية بأكملها أهم مطالب المحتجين اللبنانيين"
+    lang = "arabic"
+    nonce = "1"
+
+    data = {"lang": lang, "nonce": nonce, "text": text}
+    response = client.put(mobile_endpoint, json=data)
+
+    assert response.status_code == 200
+    resp_json = response.get_json()
+    notes = resp_json["notes"]
+    with open("lookhere.txt", "w") as fp:
+        fp.write(text)
+        fp.write("\n")
+        fp.write(notes[0])
+    assert len(notes) >= 0
