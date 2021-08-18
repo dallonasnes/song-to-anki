@@ -47,6 +47,19 @@ MY_CLOZE_MODEL = Model(
     model_type=Model.CLOZE,
 )
 
+MY_REGULAR_MODEL = Model(
+    99887766187,
+    "Simple Lyrics Model",
+    fields=[{"name": "Lyrics"}, {"name": "Translation"}],
+    templates=[
+        {
+            "name": "Lyrics Translate Card",
+            "qfmt": "{{Lyrics}}",
+            "afmt": '{{FrontSide}}<hr id="answer">{{Translation}}',
+        }
+    ],
+)
+
 CLOZE_LIMIT = 2
 MOBILE_CLOZE_LIMIT = 1
 MIN_SENTENCE_LENGTH = 2
@@ -82,24 +95,32 @@ class Lyrics:
             # self.lyrics holds a dictionary mapping lyrics to translated lyrics
             # issue here is that it doesn't keep lyrics in the correct order
             for lyric, translation in self.lyrics.items():
-                cloze_sentence, translation = self.build_cloze_deletion_sentence(
-                    lyric, translation
+                self.notes.append(
+                    Note(model=MY_REGULAR_MODEL, fields=[lyric, translation])
                 )
-                fields = [cloze_sentence, translation]
-                my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
-                self.notes.append(my_cloze_note)
+                # don't want these to be cloze anymore
+                # cloze_sentence, translation = self.build_cloze_deletion_sentence(
+                #     lyric, translation
+                # )
+                # fields = [cloze_sentence, translation]
+                # my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
+                # self.notes.append(my_cloze_note)
         except:
             # new version to solve lyric ordering issue
             # self.lyrics is a list of objects
             # where each object has key of song lyric and value of translated lyric
             for lyric_obj in self.lyrics:
                 for lyric, translation in lyric_obj.items():
-                    cloze_sentence, translation = self.build_cloze_deletion_sentence(
-                        lyric, translation
+                    self.notes.append(
+                        Note(model=MY_REGULAR_MODEL, fields=[lyric, translation])
                     )
-                    fields = [cloze_sentence, translation]
-                    my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
-                    self.notes.append(my_cloze_note)
+                # don't want these to be cloze anymore
+                #     cloze_sentence, translation = self.build_cloze_deletion_sentence(
+                #         lyric, translation
+                #     )
+                #     fields = [cloze_sentence, translation]
+                #     my_cloze_note = Note(model=MY_CLOZE_MODEL, fields=fields)
+                #     self.notes.append(my_cloze_note)
 
         self.anki_deck = _build_deck(self.notes, self.song_name)
 
@@ -127,7 +148,7 @@ class Lyrics:
             ],
             key=lambda x: x[1],
         )
-        assert len(word_freq_scores) == len(cloze_sentence)
+        # assert len(word_freq_scores) == len(cloze_sentence)
         # make cloze out of first least-frequent word that isn't already in my vocabulary
         # get two rarest words for cloze
         count = 0
