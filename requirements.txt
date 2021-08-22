@@ -80,7 +80,7 @@ toml==0.10.1
 tqdm==4.49.0
 typed-ast==1.4.1
 typing-extensions==3.7.4.3
-urllib3==1.25.10
+urllib3==1.26.5
 validators==0.18.1
 virtualenv==20.2.0
 wasabi==0.8.0
