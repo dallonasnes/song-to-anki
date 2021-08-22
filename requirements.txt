@@ -77,7 +77,7 @@ srsly==1.0.2
 starkbank-ecdsa==1.1.0
 thinc==7.4.1
 toml==0.10.1
-tqdm==4.49.0
+tqdm==4.62.1
 typed-ast==1.4.1
 typing-extensions==3.7.4.3
 urllib3==1.26.5
