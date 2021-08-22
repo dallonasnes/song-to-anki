@@ -1,5 +1,5 @@
-#copied from: https://github.com/kerrickstaley/genanki/blob/master/genanki/apkg_schema.py
-APKG_SCHEMA = '''
+# copied from: https://github.com/kerrickstaley/genanki/blob/master/genanki/apkg_schema.py
+APKG_SCHEMA = """
 CREATE TABLE col (
     id              integer primary key,
     crt             integer not null,
@@ -71,4 +71,4 @@ CREATE INDEX ix_cards_nid on cards (nid);
 CREATE INDEX ix_cards_sched on cards (did, queue, due);
 CREATE INDEX ix_revlog_cid on revlog (cid);
 CREATE INDEX ix_notes_csum on notes (csum);
-'''
+"""

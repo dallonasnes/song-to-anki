@@ -70,7 +70,7 @@ function makeRequest(mapping, songName, songLang, pageUrl){
                 //...
             }, function(e){
                 URL.revokeObjectURL(blobUrl)
-                //TODO: should I revoke the object URL here? 
+                //TODO: should I revoke the object URL here?
             });
         }).catch(err=>logErrorAtServer(err.toString(), true));
 };

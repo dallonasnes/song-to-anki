@@ -1,0 +1,5 @@
+build:
+  docker:
+    web: Dockerfile
+run:
+  web: gunicorn -c gunicorn.config.py app:app

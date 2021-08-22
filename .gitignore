@@ -1,3 +1,11 @@
+.*.swp
+zappa*
+sendgrid*
+data/
+testing/
+.idea/
+*settings*
+*.env
 *.apkg
 __pycache__
 decks/

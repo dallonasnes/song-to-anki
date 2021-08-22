@@ -75,26 +75,26 @@ function sleep(ms) {
                 chrome.storage.local.set({songLang: targetLang}, function(resp){
                     let song_lyrics = xa.map(a => a.innerText);
                     let tr_lyrics = ya.map(a => a.innerText);
-                
+
                     let song_ids = xa.map(a => a.getAttribute("class"));
                     let tr_ids = ya.map(a => a.getAttribute("class"));
-                
+
                     //if (song_lyrics.length != song_ids.length) alert("something's broken, dallon take a look");
                     //if (tr_lyrics.length != tr_ids.length) alert("something's broken, dallon take a look");
-                
+
                     let filtered_song_ids = song_ids.filter(a => a.includes("ll"));
                     let filtered_tr_ids = tr_ids.filter(a => a.includes("ll"));
-                
+
                     //take the intersection of both filtered arrays to get an array of all lyrics lines' tags
                     let all_ids = new Set();
                     for(var x of new Set(filtered_song_ids)) if(new Set(filtered_tr_ids).has(x)) all_ids.add(x);
                     all_ids = Array.from(all_ids).sort((a, b) => filterLine(a) - filterLine(b));
-                
+
                     for(var id of all_ids){
                         if (song_ids.includes(id) && tr_ids.includes(id)){
                             let songLyricIdx = song_ids.indexOf(id);
                             let trLyricIdx = tr_ids.indexOf(id);
-                    
+
                             let songLyric = song_lyrics[songLyricIdx];
                             let trLyric = tr_lyrics[trLyricIdx];
                             //if no [ in the lyrics then proceed

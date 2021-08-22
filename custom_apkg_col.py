@@ -1,5 +1,5 @@
-#copied from: https://github.com/kerrickstaley/genanki/blob/master/genanki/apkg_col.py
-APKG_COL = r'''
+# copied from: https://github.com/kerrickstaley/genanki/blob/master/genanki/apkg_col.py
+APKG_COL = r"""
 INSERT INTO col VALUES(
     null,
     1411124400,
@@ -105,4 +105,4 @@ INSERT INTO col VALUES(
     }',
     '{}'
 );
-'''
+"""
